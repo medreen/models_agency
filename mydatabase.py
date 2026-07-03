@@ -16,17 +16,6 @@ except Exception as e:
 
 cur = conn.cursor()
 
-def insert_users(values):
-    try:
-        cur.execute('''
-            INSERT INTO users (username, email, password, account_type)
-            VALUES (%s, %s, %s, %s)
-        ''', values)
-        conn.commit()
-        print("User inserted successfully")
-    except Exception as e:
-        conn.rollback()
-        print(f"Error inserting user: {e}")
 
 def insert_model(values):
     try:
@@ -193,5 +182,16 @@ def get_all_collaboration_models():
     except Exception as e:
         print(f"Error fetching collaboration models: {e}")
 
+def get_user_by_email(email):
+    try:
+        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        return cur.fetchone()
+    except Exception as e:
+        print(f"Error fetching user by email: {e}")
 
-
+def check_user_exists(email):
+    try:
+        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        return cur.fetchone() is not None
+    except Exception as e:
+        print(f"Error checking if user exists: {e}")

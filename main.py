@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
-from database import get_products,get_sales,insert_products,insert_sales,available_stock,get_stock,insert_stock,check_user_exists, insert_users
-from flask_bcrypt import Bcrypt
 from functools import wraps
-import json
-from database import * # Ensure all functions above are imported
-from datetime import datetime, timedelta
+from mydatabase import get_user_by_email, insert_model, insert_agency, check_user_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
+from datetime import datetime
+from flask_bcrypt import Bcrypt
 import os
 from dotenv import load_dotenv
 
