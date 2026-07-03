@@ -43,24 +43,10 @@ def register():
         user = check_user_exists(email)
         if user:
             flash('Account already exists.', 'warning')
-        else:
-            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            new_user = (username, email, hashed_password, account_type)
-            insert_users(new_user)  # Insert the user into the database
-            flash('Account created successfully. Please log in.', 'success')
-
-    return render_template('login.html')
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-
-        # Check if the user exists in the database
-        user = check_user_exists(email)
-        if user and bcrypt.check_password_hash(user[3], password) and user[4] == 'model':  # Assuming password is stored in the 4th column
+        if not user and account_type == 'model':  # Ensure account type is valid
+            first_name = request.form['first_name']
+            last_name = request.form['last_name']
+            email = request.form['email']
             phone = request.form['phone']
             date_of_birth = request.form['date_of_birth']
             gender = request.form['gender']
@@ -81,9 +67,10 @@ def login():
 
             # Insert the model into the database
             insert_model(new_model)  # Insert the model into the database
-            return redirect(url_for('models')) 
-        elif user and bcrypt.check_password_hash(user[3], password) and user[4] == 'agency':  # Assuming password is stored in the 4th column
+            flash('Account created successfully. Please log in.', 'success')
+        elif not user and account_type == 'agency':  # Ensure account type is valid
             name = request.form['name']
+            email = request.form['email']
             phone = request.form['phone']
             website = request.form['website']
             city = request.form['city']
@@ -92,13 +79,26 @@ def login():
             founded_year = request.form['founded_year']
             commission_pct = request.form['commission_pct']
             new_agency = (name, email, phone, website, city, country, agency_type, founded_year, commission_pct)
+            insert_agency(new_agency)
+            flash('Account created successfully. Please log in.', 'success')
 
-            # Insert the agency into the database
-            insert_agency(new_agency)  # Insert the agency into the database
-            return redirect(url_for('agency'))
+    return render_template('login.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        # Check if the user exists in the database
+        
+        user = check_user_exists(email)
+        if user and bcrypt.check_password_hash(user['password'], password):  # Assuming password is stored in the 4th column        
+            flash('Login successful.', 'success')
+            return redirect(url_for('dashboard'))  # Redirect to dashboard after successful login
         else:
             flash('Invalid email or password.', 'danger')
-
     return render_template('login.html')
 
 @app.route('/models')
