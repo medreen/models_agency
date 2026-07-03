@@ -16,6 +16,18 @@ except Exception as e:
 
 cur = conn.cursor()
 
+def insert_users(values):
+    try:
+        cur.execute('''
+            INSERT INTO users (username, email, password, account_type)
+            VALUES (%s, %s, %s, %s)
+        ''', values)
+        conn.commit()
+        print("User inserted successfully")
+    except Exception as e:
+        conn.rollback()
+        print(f"Error inserting user: {e}")
+
 def insert_model(values):
     try:
         cur.execute('''
@@ -118,12 +130,47 @@ def get_all_models():
     except Exception as e:
         print(f"Error fetching models: {e}")
 
+def get_model_agencies(model_id):
+    try:
+        cur.execute('SELECT * FROM agency WHERE model_id = %s', (model_id,))
+        return cur.fetchall()
+    except Exception as e:
+        print(f"Error fetching agencies: {e}")
+
+def get_model_jobs(model_id):
+    try:
+        cur.execute('SELECT * FROM jobs WHERE model_id = %s', (model_id,))
+        return cur.fetchall()
+    except Exception as e:
+        print(f"Error fetching jobs: {e}")
+
+def get_model_collaborations(model_id):
+    try:
+        cur.execute('SELECT * FROM collaborations WHERE model_id = %s', (model_id,))
+        return cur.fetchall()
+    except Exception as e:
+        print(f"Error fetching collaborations: {e}")
+
 def get_all_agencies():
     try:
         cur.execute('SELECT * FROM agency')
         return cur.fetchall()
     except Exception as e:
         print(f"Error fetching agencies: {e}")
+
+def get_agency_jobs(agency_id):
+    try:
+        cur.execute('SELECT * FROM jobs WHERE agency_id = %s', (agency_id,))
+        return cur.fetchall()
+    except Exception as e:
+        print(f"Error fetching jobs: {e}")
+
+def get_agency_collaborations(agency_id):
+    try:
+        cur.execute('SELECT * FROM collaborations WHERE agency_id = %s', (agency_id,))
+        return cur.fetchall()
+    except Exception as e:
+        print(f"Error fetching collaborations: {e}")
 
 def get_all_jobs():
     try:
