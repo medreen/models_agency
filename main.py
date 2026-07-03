@@ -120,8 +120,8 @@ def jobs():
 def agency():
     agency_jobs = get_agency_jobs(session['user_id']) 
     collaborations = get_agency_collaborations(session['user_id'])  # Fetch collaborations for the current agency
-    agencies = get_model_agencies(session['user_id'])  # Fetch agencies for the current model
-    return render_template('agency.html', agency_jobs=agency_jobs, collaborations=collaborations, agencies=agencies )
+    amodel_agency = get_model_agencies(session['user_id'])  # Fetch agencies for the current model
+    return render_template('agency.html', agency_jobs=agency_jobs, collaborations=collaborations, model_agency=model_agency )
 
 @app.route('/dashboard')
 @login_required
@@ -159,6 +159,24 @@ def add_job():
         return redirect(url_for('jobs'))
 
     return render_template('dashboard.html')  # Render the job creation form
+
+@app.route('/fetch_jobs')
+@login_required
+def fetch_agency_jobs():
+    agency_jobs = get_agency_jobs(session['user_id'])
+    return render_template('jobs.html', agency_jobs=agency_jobs)
+
+@app.route('/fetch_collaborations')
+@login_required
+def fetch_agency_collaborations():
+    collaborations = get_agency_collaborations(session['user_id'])
+    return render_template('agency.html', collaborations=collaborations)
+
+@app.route('/fetch_agencies')
+@login_required
+def fetch_model_agencies():
+    model_agency = get_model_agencies(session['user_id'])
+    return render_template('agency.html', model_agency=model_agency)
 
 @app.route('/add_collaboration', methods=['GET', 'POST'])
 @login_required
