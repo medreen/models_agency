@@ -104,9 +104,9 @@ def login():
 @app.route('/models')
 @login_required
 def models_dashboard():
-    job_listings = get_model_jobs(session['user_id'])  # Fetch jobs for the current model
-    collaborations = get_model_collaborations(session['user_id'])  # Fetch collaborations for the current model
-    agencies = get_model_agencies(session['user_id'])  # Fetch agencies for the current model
+    job_listings = get_model_jobs(session['model_id'])  # Fetch jobs for the current model
+    collaborations = get_model_collaborations(session['model_id'])  # Fetch collaborations for the current model
+    agencies = get_model_agencies(session['model_id'])  # Fetch agencies for the current model
     return render_template('models.html', job_listings=job_listings, collaborations=collaborations, agencies=agencies)
 
 @app.route('/jobs')
@@ -118,9 +118,9 @@ def jobs():
 @app.route('/agency')
 @login_required
 def agency():
-    agency_jobs = get_agency_jobs(session['user_id']) 
-    collaborations = get_agency_collaborations(session['user_id'])  # Fetch collaborations for the current agency
-    amodel_agency = get_model_agencies(session['user_id'])  # Fetch agencies for the current model
+    agency_jobs = get_agency_jobs(session['agency_id']) 
+    collaborations = get_agency_collaborations(session['agency_id'])  # Fetch collaborations for the current agency
+    model_agency = get_model_agencies(session['model_id'])  # Fetch agencies for the current model
     return render_template('agency.html', agency_jobs=agency_jobs, collaborations=collaborations, model_agency=model_agency )
 
 @app.route('/dashboard')
@@ -140,7 +140,7 @@ def add_job():
         # Extract form data
         title = request.form['title']
         description = request.form['description']
-        agency_id = session['user_id']  # Assuming the logged-in user is the agency
+        agency_id = session['agency_id']  # Assuming the logged-in user is the agency
         assigned_model_id = request.form['assigned_model_id']
         job_type = request.form['job_type']
         status = request.form['status']
@@ -163,19 +163,19 @@ def add_job():
 @app.route('/fetch_jobs')
 @login_required
 def fetch_agency_jobs():
-    agency_jobs = get_agency_jobs(session['user_id'])
+    agency_jobs = get_agency_jobs(session['agency_id'])
     return render_template('jobs.html', agency_jobs=agency_jobs)
 
 @app.route('/fetch_collaborations')
 @login_required
 def fetch_agency_collaborations():
-    collaborations = get_agency_collaborations(session['user_id'])
+    collaborations = get_agency_collaborations(session['agency_id'])
     return render_template('agency.html', collaborations=collaborations)
 
 @app.route('/fetch_agencies')
 @login_required
 def fetch_model_agencies():
-    model_agency = get_model_agencies(session['user_id'])
+    model_agency = get_model_agencies(session['model_id'])
     return render_template('agency.html', model_agency=model_agency)
 
 @app.route('/add_collaboration', methods=['GET', 'POST'])
@@ -186,7 +186,7 @@ def add_collaboration():
         title = request.form['title']
         description = request.form['description']
         job_id = request.form['job_id']
-        agency_id = session['user_id']  # Assuming the logged-in user is the agency
+        agency_id = session['agency_id']  # Assuming the logged-in user is the agency
         collab_type = request.form['collab_type']
         status = request.form['status']
         partner_name = request.form['partner_name']
@@ -205,30 +205,25 @@ def add_collaboration():
 
     return render_template('dashboard.html') 
     
-@app.route('/add_collaboration_model', methods=['GET', 'POST'])
+@app.route('/collaboration_models')
 @login_required
-def add_collaboration_model():
+def collaboration_models():
     if request.method == 'POST':
-        # Extract form data
-        name = request.form['name']
-        description = request.form['description']
-        agency_id = session['user_id']  # Assuming the logged-in user is the agency
-        model_type = request.form['model_type']
-        status = request.form['status']
-        experience_level = request.form['experience_level']
-        rate_per_hour = request.form['rate_per_hour']
+        collaboration_id = request.form['collaboration_id']
+        if collaboration_id == session['collaboration_id']:
+            model_id = request.form['model_id']
+            role = request.form['role']
+            fee = request.form['fee']
+            new_collaboration_model = (collaboration_id, model_id, role, fee)
+            insert_collaboration_model(new_collaboration_model)
 
-        # Create a tuple with the collaboration model values
-        new_model = (name, description, agency_id, model_type, status, experience_level, rate_per_hour)
-
-        # Insert the collaboration model into the database
-        insert_collaboration_model(new_model)
-        return redirect(url_for('collaboration_models'))
-
-    return render_template('dashboard.html')  # Render the collaboration model creation form
+            return redirect(url_for('collaboration_models'))
+    return render_template('models.html')  # Render the collaboration models page
 
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
+
+app.run(debug=True)
