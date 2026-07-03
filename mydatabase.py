@@ -1,16 +1,15 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
 
-DB_NAME = "agent_models"
-DB_USER = "postgres"
-DB_PASS = "Colesprouse2311!"
-DB_HOST = "localhost"
-DB_PORT = "5432" 
+load_dotenv()
+
 try:
-    conn = psycopg2.connect(database=DB_NAME,
-                            user=DB_USER,
-                            password=DB_PASS,
-                            host=DB_HOST,
-                            port=DB_PORT)
+    conn = psycopg2.connect(database=os.getenv("DB_NAME"),
+                            user=os.getenv("DB_USER"),
+                            password=os.getenv("DB_PASS"),
+                            host=os.getenv("DB_HOST"),
+                            port=os.getenv("DB_PORT"))
     print("Database connected successfully")
 except Exception as e: 
     print(f"Database not connected successfully: {e}")
