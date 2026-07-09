@@ -1,32 +1,27 @@
-{% extends 'base.html' %} {% block title %} Create Model Account {% endblock %}
+{% extends 'base.html' %} {% block title %} Create Agency Account {% endblock %}
 {% block content %}
 
 <div class="container p-6 mt-10">
   <form action="/register_agency" method="POST">
     <h2 class="text-2xl font-bold mb-6">
       Create <span class="logo-mark">Agency</span> Account
-    </h2>   
+    </h2>
+
     <div class="mb-6">
-      <label
-        for="last_name"
-        class="block mb-2.5 text-sm font-medium text-heading"
-        >Agency Name</label
-      >
+      <label for="agency_name" class="block mb-2.5 text-sm font-medium text-heading">Agency Name</label>
       <input
         type="text"
-        id="name"
-        name="last_name"
+        id="agency_name"
+        name="name"
         class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-        placeholder="Doe"
+        placeholder="Lalita Models Agency"
         required
       />
     </div>
 
     <div class="grid gap-6 mb-6 md:grid-cols-2">
       <div>
-        <label for="email" class="block mb-2.5 text-sm font-medium text-heading"
-          >Email</label
-        >
+        <label for="email" class="block mb-2.5 text-sm font-medium text-heading">Email</label>
         <input
           type="email"
           id="email"
@@ -37,9 +32,7 @@
         />
       </div>
       <div>
-        <label for="phone" class="block mb-2.5 text-sm font-medium text-heading"
-          >Phone number</label
-        >
+        <label for="phone" class="block mb-2.5 text-sm font-medium text-heading">Phone number</label>
         <input
           type="tel"
           id="phone"
@@ -54,252 +47,48 @@
 
     <div class="grid gap-6 mb-6 md:grid-cols-2">
       <div>
-        <label
-          for="profile"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Profile Photo</label
-        >
+        <label for="founded_year" class="block mb-2.5 text-sm font-medium text-heading">Founded Year</label>
         <input
-          type="file"
-          id="profile"
-          name="profile_photo_url"
-          accept="image/*"
-          class="bg-neutral-secondary-medium border text-heading text-sm rounded-base placeholder:text-body block w-full px-3 py-2.5"
-          required
-        />
-      </div>
-      <div>
-        <label
-          for="portfolio"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Portfolio Link</label
-        >
-        <input
-          type="url"
-          id="portfolio"
-          name="portfolio_url"
+          type="number"
+          id="founded_year"
+          name="founded_year"
+          min="1900"
+          max="2026"
           class="bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="https://your-portfolio.com"
-          required
-        />
-      </div>
-    </div>
-
-    <div class="grid gap-6 mb-6 md:grid-cols-2">
-      <div>
-        <label
-          for="date_of_birth"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Date of Birth</label
-        >
-        <input
-          type="date"
-          id="date_of_birth"
-          name="date_of_birth"
-          class="bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs"
+          placeholder="2015"
           required
         />
       </div>
       <div>
-        <label
-          for="gender"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Gender</label
-        >
+        <label for="agency_type" class="block mb-2.5 text-sm font-medium text-heading">Agency Type</label>
         <select
-          id="gender"
-          name="gender"
+          id="agency_type"
+          name="agency_type"
           class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs"
+          required
         >
-          <option selected disabled>Select gender preference</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
+          <option selected disabled value="">Select Category</option>
+          <option value="fashion">Fashion</option>
+          <option value="runway">Runway</option>
+          <option value="magazine">Magazine</option>
+          <option value="vixen">Vixen</option>
         </select>
       </div>
     </div>
 
-    <div class="grid gap-6 mb-6 md:grid-cols-3">
-      <div>
-        <label
-          for="height_cm"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Height (cm)</label
-        >
-        <input
-          type="number"
-          id="height_cm"
-          name="height_cm"
-          min="0"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="170"
-          required
-        />
-      </div>
-      <div>
-        <label
-          for="weight_kg"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Weight (kg)</label
-        >
-        <input
-          type="number"
-          id="weight_kg"
-          name="weight_kg"
-          min="0"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="60"
-          required
-        />
-      </div>
-      <div>
-        <label
-          for="shoe_size"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Shoe Size</label
-        >
-        <input
-          type="number"
-          id="shoe_size"
-          name="shoe_size"
-          min="0"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="42"
-          required
-        />
-      </div>
-    </div>
-
-    <div class="grid gap-6 mb-6 md:grid-cols-3">
-      <div>
-        <label
-          for="bust_cm"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Bust (cm)</label
-        >
-        <input
-          type="number"
-          id="bust_cm"
-          name="bust_cm"
-          min="0"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="90"
-          required
-        />
-      </div>
-      <div>
-        <label
-          for="waist_cm"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Waist (cm)</label
-        >
-        <input
-          type="number"
-          id="waist_cm"
-          name="waist_cm"
-          min="0"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="60"
-          required
-        />
-      </div>
-      <div>
-        <label
-          for="hips_cm"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Hips (cm)</label
-        >
-        <input
-          type="number"
-          id="hips_cm"
-          name="hips_cm"
-          min="0"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="90"
-          required
-        />
-      </div>
-    </div>
-
     <div class="grid gap-6 mb-6 md:grid-cols-2">
       <div>
-        <label
-          for="eye_color"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Eye Color</label
-        >
+        <label for="website" class="block mb-2.5 text-sm font-medium text-heading">Website</label>
         <input
-          type="text"
-          id="eye_color"
-          name="eye_color"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="Brown"
-          required
+          type="url"
+          id="website"
+          name="website"
+          class="bg-neutral-secondary-medium border text-heading text-sm rounded-base placeholder:text-body block w-full px-3 py-2.5"
+          placeholder="https://youragency.com"
         />
       </div>
       <div>
-        <label
-          for="hair_color"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Hair Color</label
-        >
-        <input
-          type="text"
-          id="hair_color"
-          name="hair_color"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="Black"
-          required
-        />
-      </div>
-    </div>
-    <div class="mb-6">
-      <label class="block mb-2.5 text-sm font-medium text-heading"
-        >Category</label
-      >
-      <div class="flex flex-wrap gap-4">
-        <label class="flex items-center gap-2 text-sm text-heading">
-          <input type="radio" name="category" value="Fashion" required />
-          Fashion
-        </label>
-        <label class="flex items-center gap-2 text-sm text-heading">
-          <input type="radio" name="category" value="Runway" />
-          Runway
-        </label>
-        <label class="flex items-center gap-2 text-sm text-heading">
-          <input type="radio" name="category" value="Magazine" />
-          Magazine
-        </label>
-        <label class="flex items-center gap-2 text-sm text-heading">
-          <input type="radio" name="category" value="Vixen" />
-          Vixen
-        </label>
-      </div>
-    </div>
-
-    <div class="grid gap-6 mb-6 md:grid-cols-2">
-      <div>
-        <label
-          for="experience_yrs"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Experience (years)</label
-        >
-        <input
-          type="number"
-          id="experience_yrs"
-          name="experience_yrs"
-          min="0"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="3"
-          required
-        />
-      </div>
-      <div>
-        <label
-          for="rate_per_hour"
-          class="block mb-2.5 text-sm font-medium text-heading"
-          >Rate per hour (KES)</label
-        >
+        <label for="rate_per_hour" class="block mb-2.5 text-sm font-medium text-heading">Rate per hour (KES)</label>
         <input
           type="number"
           id="rate_per_hour"
@@ -313,19 +102,29 @@
       </div>
     </div>
 
-    <div class="mb-6">
-      <label class="switch-label">
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+      <div>
+        <label for="country" class="block mb-2.5 text-sm font-medium text-heading">Country</label>
         <input
-          type="checkbox"
-          id="available"
-          name="is_available"
-          value="true"
-          class="switch-input"
-          checked
+          type="text"
+          id="country"
+          name="country"
+          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+          placeholder="Kenya"
+          required
         />
-        <div class="switch-track"></div>
-        <span class="switch-text">Available for booking</span>
-      </label>
+      </div>
+      <div>
+        <label for="city" class="block mb-2.5 text-sm font-medium text-heading">City</label>
+        <input
+          type="text"
+          id="city"
+          name="city"
+          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+          placeholder="Nairobi"
+          required
+        />
+      </div>
     </div>
 
     <div class="mb-6">
@@ -375,9 +174,7 @@
       </div>
       <label for="remember" class="ms-2 text-sm font-medium text-heading">
         I agree with the
-        <a href="#" class="text-fg-brand hover:underline"
-          >terms and conditions</a
-        >.
+        <a href="#" class="text-fg-brand hover:underline">terms and conditions</a>.
       </label>
     </div>
 
@@ -389,5 +186,8 @@
     </p>
   </form>
 </div>
+
+
+
 
 {% endblock %}

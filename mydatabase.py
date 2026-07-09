@@ -200,3 +200,42 @@ def check_agency_exists(email):
         return cur.fetchone() is not None
     except Exception as e:
         print(f"Error checking if agency exists: {e}")
+
+def update_job_status_on_acceptance(job_id: int, model_response: str):
+    """
+    Updates a job's status to 'active' when the assigned model accepts it.
+    If declined, sets status to 'declined'. Otherwise leaves it as 'pending'.
+
+    model_response should be 'accepted', 'declined', or 'pending'.
+    """
+    status_map = {
+        "accepted": "active",
+        "declined": "declined",
+        "pending": "pending",
+    }
+
+    new_status = status_map.get(model_response)
+    if new_status is None:
+        raise ValueError(f"Invalid model_response: {model_response}")
+
+    conn = get_connection()  # swap with however you're opening your connection
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                UPDATE jobs
+                SET status = %s
+                WHERE id = %s
+                RETURNING id, status;
+                """,
+                (new_status, job_id),
+            )
+            updated_row = cur.fetchone()
+            conn.commit()
+
+            if updated_row is None:
+                raise ValueError(f"No job found with id {job_id}")
+
+            return updated_row
+    finally:
+        conn.close()

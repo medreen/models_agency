@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, session
 from functools import wraps
 from mydatabase import get_model_by_email, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
 from datetime import datetime
@@ -11,6 +11,8 @@ load_dotenv()
 #assigning an object to flask class
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")  #
+
+jobs_bp = Blueprint("jobs", __name__)
 
 #creating a bcrypt object for password hashing
 bcrypt = Bcrypt(app)
@@ -114,7 +116,7 @@ def login():
     return render_template('login.html')  # Render the login form
 
 @app.route('/models')
-@login_required
+# @login_required
 def models_dashboard():
     job_listings = get_model_jobs(session['model_id'])  # Fetch jobs for the current model
     collaborations = get_model_collaborations(session['model_id'])  # Fetch collaborations for the current model
@@ -122,13 +124,13 @@ def models_dashboard():
     return render_template('models.html', job_listings=job_listings, collaborations=collaborations, agencies=agencies)
 
 @app.route('/jobs')
-@login_required
+# @login_required
 def jobs():
     job_listings = get_all_jobs()  # Fetch all jobs from the database
     return render_template('jobs.html', job_listings=job_listings)
 
 @app.route('/agency')
-@login_required
+# @login_required
 def agency():
     agency_jobs = get_agency_jobs(session['agency_id']) 
     collaborations = get_agency_collaborations(session['agency_id'])  # Fetch collaborations for the current agency
@@ -136,7 +138,7 @@ def agency():
     return render_template('agency.html', agency_jobs=agency_jobs, collaborations=collaborations, model_agency=model_agency )
 
 @app.route('/dashboard')
-@login_required
+# @login_required
 def fetch_statistics():
     jobs_listings = get_all_jobs()  # Fetch all jobs from the database
     collaborations_listings = get_all_collaborations()  # Fetch all collaborations from the database
@@ -146,8 +148,12 @@ def fetch_statistics():
     return render_template('collaborations.html', collaboration_listings=collaboration_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, model_listings=model_listings, jobs_listings=jobs_listings)
 
 @app.route('/add_job', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def add_job():
+    verified_agent = session.get(agency_id)
+    if not verified_agent:
+        flash('Access denied for this action', 'warning')
+
     if request.method == 'POST':
         # Extract form data
         title = request.form['title']
@@ -182,26 +188,51 @@ def add_job():
 
     return render_template('dashboard.html')  
 
+
+@jobs_bp.route("/jobs/<int:job_id>/respond", methods=["POST"])
+def respond_to_job(job_id):
+    model_id = session.get("model_id")  # however you're tracking the logged-in model
+    if not model_id:
+        flash("Please log in to respond to job requests.")
+        return redirect(url_for("login"))
+
+    response = request.form.get("response")  # "accepted" or "declined"
+    if response not in ("accepted", "declined"):
+        flash("Invalid response.")
+        return redirect(url_for("models.dashboard"))
+
+    try:
+        update_job_status_on_acceptance(
+            job_id=job_id,
+            model_id=model_id,
+            model_response=response,
+        )
+        flash(f"Job {response} successfully.")
+    except ValueError as e:
+        flash(str(e))
+
+    return redirect(url_for("models_dashboard"))
+
 @app.route('/fetch_jobs')
-@login_required
+# @login_required
 def fetch_agency_jobs():
     agency_jobs = get_agency_jobs(session['agency_id'])
     return render_template('jobs.html', agency_jobs=agency_jobs)
 
 @app.route('/fetch_collaborations')
-@login_required
+# @login_required
 def fetch_agency_collaborations():
     collaborations = get_agency_collaborations(session['agency_id'])
     return render_template('agency.html', collaborations=collaborations)
 
 @app.route('/fetch_agencies')
-@login_required
+# @login_required
 def fetch_model_agencies():
     model_agency = get_model_agencies(session['model_id'])
     return render_template('agency.html', model_agency=model_agency)
 
 @app.route('/add_collaboration', methods=['GET', 'POST'])
-@login_required
+# @login_required
 def add_collaboration():
     if request.method == 'POST':
         # Extract form data
@@ -238,7 +269,7 @@ def add_collaboration():
     return render_template('dashboard.html') 
     
 @app.route('/collaboration_models')
-@login_required
+# @login_required
 def collaboration_models():
     if request.method == 'POST':
         collaboration_id = request.form['collaboration_id']
