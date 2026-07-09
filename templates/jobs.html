@@ -1,27 +1,76 @@
-{% extends 'base.html'%} 
-{% block title%} Jobs & Collaborations {% endblock%}
-
-{% block content %}
+{% extends 'base.html'%} {% block title%} Jobs & Collaborations {% endblock%} {%
+block content %}
 
 <div class="jobs_page">
+  <!--declined jobs open for reapplication -->
+  <section class="open_jobs">
+    <h2 class="text-2xl font-bold mb-3">
+      Jobs <span class="logo-mark">Available</span> for applications
+    </h2>
+    <div class="grid gap-3 mb-0 md:grid-cols-4">
+      <div class="w-full container">
+        <h5 class="logo-tag">reoppened</h5>
+        <div class="flex items-baseline text-heading">
+          <span class="text-5xl font-extrabold tracking-tight">Lalita</span>
+        </div>
 
-    <!--declined jobs open for reapplication -->
-    <section class="open_jobs">
+        <div class="block mb-3 mt-4 align-center gap-2">
+          <h2 class="text-3xl logo-mark font-light">Job Title</h2>
+          <p class="text-sm">description</p>
+        </div>
 
-    </section>
+        <div class="flex items-baseline text-body gap-16">
+          <span class="font-bold logo-tag">Category</span>
+          <span class="text-sm">End Date</span>
+        </div>
 
-     <!--declined jobs past for reapplication -->
-    <section class="past_jobs">
+        <div class="flex items-baseline text-body gap-16">
+          <span class="font-bold logo-tag">Gender</span>
+          <span class="text-sm">End Date</span>
+        </div>
 
-    </section>
+        <div class="flex items-baseline text-body mb-6 gap-16">
+          <span class="font-bold logo-tag">Hourly Rate</span>
+          <span class="text-sm">End Date</span>
+        </div>
 
-     <!--agency's own posted jobs -->
-    <section class="open_jobs">
+        <div class="flex items-baseline text-body mt-3 gap-16">
+          <span class="logo-tag">Start Date</span>
+          <span class="logo-tag">End Date</span>
+        </div>
+        <button type="button" class="cta w-full mt-5">Apply</button>
+      </div>
+    </div>
+  </section>
 
-    </section>
+  <!--past jobs -->
+  <section class="past_jobs mt-8">
+    <h2 class="text-2xl font-bold mb-3">
+      Jobs <span class="logo-mark">Made Possible</span> by us
+    </h2>
+    <div class="grid past_jobs_div gap-3 mb-0 md:grid-cols-6">
+      <div class="flex items-start gap-2.5">
+        <div class="flex flex-col gap-1 w-full max-w-[320px]">
+          <div class="flex items-center space-x-1.5 rtl:space-x-reverse">
+            <span class="text-sm font-semibold text-heading">Job Title</span>
+            <h2 class="text-medium text-body">Lalita</h2>
+          </div>
+          <div
+            class="flex flex-col leading-1.5 p-4 bg-neutral-secondary-soft rounded-e-base rounded-es-bas"
+          >
+            <p class="text-sm text-body">
+              That's awesome. I think our users will really appreciate the
+              improvements.
+            </p>
+          </div>
+          <span class="text-sm text-body">Delivered</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
-
-
+  <!--agency's own posted jobs -->
+  <section class="open_jobs"></section>
 </div>
 
 {% endblock%}

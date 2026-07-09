@@ -131,11 +131,10 @@ def jobs():
 
 @app.route('/agency')
 # @login_required
-def agency():
-    agency_jobs = get_agency_jobs(session['agency_id']) 
-    collaborations = get_agency_collaborations(session['agency_id'])  # Fetch collaborations for the current agency
-    model_agency = get_model_agencies(session['model_id'])  # Fetch agencies for the current model
-    return render_template('agency.html', agency_jobs=agency_jobs, collaborations=collaborations, model_agency=model_agency )
+def agency(): 
+    agencies = get_all_agencies
+    collaborations = get_all_collaborations
+    return render_template('agency.html', agencies=agencies, collaborations=collaborations)
 
 @app.route('/dashboard')
 # @login_required
