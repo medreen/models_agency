@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 from functools import wraps
-from mydatabase import get_user_by_email, insert_model, insert_agency, check_user_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
+from mydatabase import get_model_by_email, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
 from datetime import datetime
 from flask_bcrypt import Bcrypt
 import os
@@ -19,57 +19,66 @@ bcrypt = Bcrypt(app)
 def index():
     return render_template('index.html')
 
-
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'user_id' not in session:
+        if 'model_id' not in session or 'agency_id' not in session:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        username = request.form['username']
+@app.route('/register_model', methods=['GET', 'POST'])
+def register_model():
+    if request.method == 'POST':      
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
         email = request.form['email']
         password = request.form['password']
-        account_type = request.form['account_type']  # Get the account type from the form
+        phone = request.form['phone']
+        date_of_birth = request.form['date_of_birth']
+        gender = request.form['gender']
+        height_cm = request.form['height_cm']
+        weight_kg = request.form['weight_kg']
+        bust_cm = request.form['bust_cm']
+        waist_cm = request.form['waist_cm']
+        hips_cm = request.form['hips_cm']
+        shoe_size = request.form['shoe_size']
+        eye_color = request.form['eye_color']
+        hair_color = request.form['hair_color']
+        category = request.form['category']
+        experience_yrs = request.form['experience_yrs']
+        is_available = request.form['is_available']
+        rate_per_hour = request.form['rate_per_hour']
+        portfolio_url = request.form['portfolio_url']
+        profile_photo_url = request.form['profile_photo_url']
+        created_at = datetime.now()
+        updated_at = datetime.now()  
 
-        # Check if the user exists in the database
-        user = check_user_exists(email)
-        if user:
+        email_exists = check_model_exists(email)
+        if email_exists:        
             flash('Account already exists.', 'warning')
-        if not user and account_type == 'model':  # Ensure account type is valid
-            first_name = request.form['first_name']
-            last_name = request.form['last_name']
-            email = request.form['email']
-            phone = request.form['phone']
-            date_of_birth = request.form['date_of_birth']
-            gender = request.form['gender']
-            height_cm = request.form['height_cm']
-            weight_kg = request.form['weight_kg']
-            bust_cm = request.form['bust_cm']
-            waist_cm = request.form['waist_cm']
-            hips_cm = request.form['hips_cm']
-            shoe_size = request.form['shoe_size']
-            eye_color = request.form['eye_color']
-            hair_color = request.form['hair_color']
-            category = request.form['category']
-            experience_yrs = request.form['experience_yrs']
-            is_available = request.form['is_available']
-            rate_per_hour = request.form['rate_per_hour']
-            agency_id = request.form['agency_id']
-            new_model = (phone, date_of_birth, gender, height_cm, weight_kg, bust_cm, waist_cm, hips_cm, shoe_size, eye_color, hair_color, category, experience_yrs, is_available, rate_per_hour, agency_id)
+            return redirect(url_for('login'))
+        else:
+            new_model = (first_name, last_name, email, password, phone, date_of_birth, gender, height_cm, weight_kg, bust_cm, waist_cm, hips_cm, shoe_size, eye_color, hair_color, category, experience_yrs, is_available, rate_per_hour, portfolio_url, profile_photo_url, created_at, updated_at)
 
             # Insert the model into the database
             insert_model(new_model)  # Insert the model into the database
             flash('Account created successfully. Please log in.', 'success')
-        elif not user and account_type == 'agency':  # Ensure account type is valid
+           
+    return render_template('registermodel.html')
+
+@app.route('/register_agency', methods=['GET', 'POST'])
+def register_agency():
+    if request.method == 'POST':
+        email = request.form['email']
+        agent = check_agency_exists(email)
+
+        if not agent:  # Ensure account type is valid
             name = request.form['name']
             email = request.form['email']
             phone = request.form['phone']
+            password = request.form['password']
             website = request.form['website']
             city = request.form['city']
             country = request.form['country']
@@ -79,8 +88,9 @@ def register():
             new_agency = (name, email, phone, website, city, country, agency_type, founded_year, commission_pct)
             insert_agency(new_agency)
             flash('Account created successfully. Please log in.', 'success')
-
-    return render_template('login.html')
+        elif agent:
+            flash('Account already exists.', 'warning')
+    return render_template('registerAgency.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -90,14 +100,18 @@ def login():
         password = request.form['password']
 
         # Check if the user exists in the database
-        
-        user = check_user_exists(email)
-        if user and bcrypt.check_password_hash(user['password'], password):  # Assuming password is stored in the 4th column        
+        agency = check_agency_exists(session.get('agency_id'), email)
+        models = check_model_exists(email)
+        if models and bcrypt.check_password_hash(models['password'], password):  # Assuming password is stored in the 4th column        
             flash('Login successful.', 'success')
             return redirect(url_for('dashboard'))  # Redirect to dashboard after successful login
+        elif agency and bcrypt.check_password_hash(agency['password'], password):  # Assuming password is stored in the 4th column
+            flash('Login successful.', 'success')
+            return redirect(url_for('dashboard'))  # Redirect to dashboard after successful login
+            
         else:
             flash('Invalid email or password.', 'danger')
-    return render_template('login.html')
+    return render_template('login.html')  # Render the login form
 
 @app.route('/models')
 @login_required
@@ -144,19 +158,29 @@ def add_job():
         status = request.form['status']
         location = request.form['location']
         city = request.form['city']
+        country = request.form['country']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
         rate_per_hour = request.form['rate_per_hour']
         total_hours = request.form['total_hours']
+        total_pay = request.form['total_pay']
+        currency = request.form['currency']
+        is_paid = request.form['is_paid']
+        gender_required = request.form['gender_required']
+        min_height_cm = request.form['min_height_cm']
+        max_height_cm = request.form['max_height_cm']
+        category_required = request.form['category_required']
+        created_at = datetime.now()
+        updated_at = datetime.now()
 
         # Create a tuple with the job values
-        new_job = (title, description, agency_id, assigned_model_id, job_type, status, location, city, start_date, end_date, rate_per_hour, total_hours)
+        new_job = (title, description, agency_id, assigned_model_id, job_type, status, location, city, country, start_date, end_date, start_time, end_time, rate_per_hour, total_hours, total_pay, currency, is_paid, gender_required, min_height_cm, max_height_cm, category_required, created_at, updated_at)
 
         # Insert the job into the database
         insert_job(new_job)
         return redirect(url_for('jobs'))
 
-    return render_template('dashboard.html')  # Render the job creation form
+    return render_template('dashboard.html')  
 
 @app.route('/fetch_jobs')
 @login_required
@@ -189,13 +213,23 @@ def add_collaboration():
         status = request.form['status']
         partner_name = request.form['partner_name']
         partner_email = request.form['partner_email']
+        partner_website = request.form['partner_website']
+        partner_phone = request.form['partner_phone']
         start_date = request.form['start_date']
-        end_date = request.form['end_date']
+        end_date = request.form['end_date']        
+        is_paid = request.form['is_paid']
         deal_value = request.form['deal_value']
         commission_pct = request.form['commission_pct']
+        commission_amount = request.form['commision_amount']
+        currency = request.form['currency']
+        contract_url = request.form['contract_url']
+        is_signed = request.form['is_signed']
+        signed_at = request.form['signed_at']
+        created_at = request.form['created_at']
+        updated_at = request.form['updated_at']
 
         # Create a tuple with the collaboration values
-        new_collaboration = (title, description, job_id, agency_id, collab_type, status, partner_name, partner_email, start_date, end_date, deal_value, commission_pct)
+        new_collaboration = (title, description, job_id, agency_id, collab_type, status, partner_name, partner_phone, partner_email, partner_website, start_date, end_date, deal_value, commission_pct, commission_amount, is_paid, contract_url, is_signed, signed_at, created_at, updated_at)
 
         # Insert the collaboration into the database
         insert_collaboration(new_collaboration)

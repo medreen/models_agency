@@ -13,25 +13,23 @@ try:
     print("Database connected successfully")
 except Exception as e: 
     print(f"Database not connected successfully: {e}")
-
 cur = conn.cursor()
-
 
 def insert_model(values):
     try:
         cur.execute('''
             INSERT INTO models (
-                first_name, last_name, email, phone,
+                first_name, last_name, email, phone, password,
                 date_of_birth, gender, height_cm, weight_kg,
                 bust_cm, waist_cm, hips_cm, shoe_size,
-                eye_color, hair_color, category,
-                experience_yrs, is_available, rate_per_hour, agency_id
+                eye_color, hair_color, category, is_available,
+                experience_yrs, is_available, rate_per_hour, portfolio_url, profile_photo_url, created_at, updated_at
             ) VALUES (
+                %s, %s, %s, %s, %s,
                 %s, %s, %s, %s,
-                %s, %s, %s, %s,
-                %s, %s, %s, %s,
-                %s, %s, %s,
-                %s, %s, %s, %s
+                %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, 
             )
         ''', values)
         conn.commit()
@@ -44,13 +42,13 @@ def insert_agency(values):
     try:
         cur.execute('''
             INSERT INTO agency (
-                name, email, phone, website,
-                city, country, agency_type,
-                founded_year, commission_pct
+                name, email, phone, password, website, address, city, country, agency_type, founded_year, commission_pct, is_active, currency, logo_url, instagram_url, created_at, updated_at
+                total_models
             ) VALUES (
                 %s, %s, %s, %s,
                 %s, %s, %s,
-                %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+
             )
         ''', values)
         conn.commit()
@@ -64,12 +62,12 @@ def insert_job(values):
         cur.execute('''
             INSERT INTO jobs (
                 title, description, agency_id, assigned_model_id,
-                job_type, status, location, city,
-                start_date, end_date, rate_per_hour, total_hours
+                job_type, status, location, city, country,
+                start_date, end_date, start_time, end_time, rate_per_hour, total_hours, total_pay, currency, is_paid, gender_required, min_height_cm, max_height_cm, category_required, created_at, updated_at
             ) VALUES (
                 %s, %s, %s, %s,
                 %s, %s, %s, %s,
-                %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
             )
         ''', values)
         conn.commit()
@@ -83,12 +81,12 @@ def insert_collaboration(values):
         cur.execute('''
             INSERT INTO collaborations (
                 title, description, job_id, agency_id,
-                collab_type, status, partner_name, partner_email,
-                start_date, end_date, deal_value, commission_pct
+                collab_type, status, partner_name, partner_phone, partner_email, partner_website, currency,
+                start_date, end_date, deal_value, commission_pct, commission_amount, is_paid, contract_url, is_signed, signed_at, created_at, updated_at
             ) VALUES (
                 %s, %s, %s, %s,
                 %s, %s, %s, %s,
-                %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
             )
         ''', values)
         conn.commit()
@@ -182,16 +180,23 @@ def get_all_collaboration_models():
     except Exception as e:
         print(f"Error fetching collaboration models: {e}")
 
-def get_user_by_email(email):
+def get_model_by_email(model_id, email):
     try:
-        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        cur.execute('SELECT * FROM models WHERE email = %s AND model_id = %s', (email, model_id))
         return cur.fetchone()
     except Exception as e:
-        print(f"Error fetching user by email: {e}")
+        print(f"Error fetching model by email: {e}")
 
-def check_user_exists(email):
+def check_model_exists(email):
     try:
-        cur.execute('SELECT * FROM users WHERE email = %s', (email,))
+        cur.execute('SELECT * FROM models WHERE email = %s', (email,))
         return cur.fetchone() is not None
     except Exception as e:
-        print(f"Error checking if user exists: {e}")
+        print(f"Error checking if model exists: {e}")
+
+def check_agency_exists(email):
+    try:
+        cur.execute('SELECT * FROM agency WHERE email = %s', (email,))
+        return cur.fetchone() is not None
+    except Exception as e:
+        print(f"Error checking if agency exists: {e}")
