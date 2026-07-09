@@ -144,7 +144,7 @@ def fetch_statistics():
     collaboration_models = get_all_collaboration_models()  # Fetch all collaboration models from the database
     agency_listings = get_all_agencies()  # Fetch all agencies from the database
     model_listings = get_all_models()  # Fetch all models from the database
-    return render_template('collaborations.html', collaboration_listings=collaboration_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, model_listings=model_listings, jobs_listings=jobs_listings)
+    return render_template('dashboard.html', collaboration_listings=collaboration_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, model_listings=model_listings, jobs_listings=jobs_listings)
 
 @app.route('/add_job', methods=['GET', 'POST'])
 # @login_required
@@ -198,7 +198,7 @@ def respond_to_job(job_id):
     response = request.form.get("response")  # "accepted" or "declined"
     if response not in ("accepted", "declined"):
         flash("Invalid response.")
-        return redirect(url_for("models.dashboard"))
+        return redirect(url_for("models_dashboard"))
 
     try:
         update_job_status_on_acceptance(

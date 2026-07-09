@@ -22,7 +22,11 @@
   background: var(--paper);
   border-bottom: 1px solid var(--line);
 }
- .desktop-only { display: flex; align-items: center; gap: 2.25rem; }
+.desktop-only {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+}
 .nav-inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -31,6 +35,11 @@
   align-items: center;
   justify-content: space-between;
   height: 72px;
+}
+
+main {
+  margin: 0;
+  padding: 5px;
 }
 
 h2 {
@@ -66,20 +75,20 @@ h2 {
 
 .switch-track {
   position: relative;
-  width: 36px;   /* w-9 */
-  height: 20px;  /* h-5 */
+  width: 36px; /* w-9 */
+  height: 20px; /* h-5 */
   background-color: #9a9a9a;
   border-radius: 999px;
   transition: background-color 0.2s ease;
 }
 
 .switch-track::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 2px;
   left: 2px;
-  height: 16px;  /* h-4 */
-  width: 16px;   /* w-4 */
+  height: 16px; /* h-4 */
+  width: 16px; /* w-4 */
   background-color: #fff;
   border-radius: 50%;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
@@ -194,7 +203,9 @@ h2 {
  
    */
 
-input, select, option {
+input,
+select,
+option {
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 8px;
@@ -244,7 +255,7 @@ body {
 
 .container {
   /* max-width: 450px; */
-  width: 100%; 
+  width: 100%;
   padding: 2rem;
   margin-bottom: 3rem;
   background-color: #f5f5f5;
@@ -252,21 +263,177 @@ body {
   border-radius: 0.75rem;
 }
 
-.past_jobs_div {
+.past_jobs {
   margin-bottom: 8rem;
+}
+
+.job-tags {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.single-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.past_jobs_div {
   background-color: var(--ink);
   border: var(--ink);
   color: var(--paper);
   border-radius: 16px;
-  padding: 2rem;
-  max-width: 350px;
+  padding: 1.5rem;
+  /* max-width: 350px;*/
   width: 100%;
-  max-height: 150px;
-  height: 100%; 
-  backdrop-filter: blur(12px);
+  max-height: 200px;
+  /* height: 100%;  */
+  /* backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px); /* Safari support */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
+
+h1 {
+  position: relative;
+  left: 38%;
+}
+
+h2 {
+  position: relative;
+  left: 30%;
+}
+
+h3 {
+  color: #a8552e;
+}
+
+.status-label {
+  color: var(--muted);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+.posted_jobs_inner {
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}
+
+.posted_jobs_div {
+  background-color: #f5f5f5;
+  border: 1px solid var(--line, #e4dfd5);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.job-agency {
+  font-size: 0.8rem;
+  color: var(--muted, #8a8375);
+}
+
+.status-pill {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.status-pending {
+  background: #f1e6dd;
+  color: var(--clay, #a8552e);
+}
+.status-active {
+  background: #e6f0fb;
+  color: #2b5fa8;
+}
+.status-declined {
+  background: #fbeeea;
+  color: #b3432b;
+}
+
+.job-tags {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.9rem;
+  flex-wrap: wrap;
+}
+
+.job-tag {
+  background: #efece5;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+}
+
+.job-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.4rem;
+}
+
+.rate-highlight {
+  font-weight: 600;
+  color: var(--clay, #a8552e);
+}
+
+.posted_jobs {
+  background-color: #242323aa;
+  padding: 0;
+  margin: 0;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.job-desc {
+  font-size: 0.85rem;
+  color: #444;
+  line-height: 1.5;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.job-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line, #e4dfd5);
+}
+
+.job-actions form {
+  flex: 1;
+}
+
+.btn-decline {
+  background: transparent;
+  color: var(--ink, #17140f);
+  border-color: var(--line, #e4dfd5);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* @media (max-width: 860px) {
     .desktop-only { display: none; }
     .toggle { display: block; }

@@ -9,37 +9,43 @@ block content %}
     </h2>
     <div class="grid gap-3 mb-0 md:grid-cols-4">
       <div class="w-full container">
-        <h5 class="logo-tag">reoppened</h5>
-        <div class="flex items-baseline text-heading">
-          <span class="text-5xl font-extrabold tracking-tight">Lalita</span>
-        </div>
+  <span class="status-pill status-active">Reopened</span>
 
-        <div class="block mb-3 mt-4 align-center gap-2">
-          <h2 class="text-3xl logo-mark font-light">Job Title</h2>
-          <p class="text-sm">description</p>
-        </div>
+  <div class="flex items-baseline text-heading">
+    <span class="text-5xl font-extrabold tracking-tight">Lalita</span>
+  </div>
 
-        <div class="flex items-baseline text-body gap-16">
-          <span class="font-bold logo-tag">Category</span>
-          <span class="text-sm">End Date</span>
-        </div>
+  <div class="block mb-3 mt-4">
+    <h3 class="text-3xl logo-mark font-light">Job Title</h3>
+    <p class="text-sm">description</p>
+  </div>
 
-        <div class="flex items-baseline text-body gap-16">
-          <span class="font-bold logo-tag">Gender</span>
-          <span class="text-sm">End Date</span>
-        </div>
+  <div class="flex items-baseline justify-between text-body gap-16">
+    <span class="font-bold logo-tag">Category</span>
+    <span class="text-sm">Runway</span>
+  </div>
 
-        <div class="flex items-baseline text-body mb-6 gap-16">
-          <span class="font-bold logo-tag">Hourly Rate</span>
-          <span class="text-sm">End Date</span>
-        </div>
+  <div class="flex items-baseline justify-between text-body gap-16">
+    <span class="font-bold logo-tag">Gender</span>
+    <span class="text-sm">Female</span>
+  </div>
 
-        <div class="flex items-baseline text-body mt-3 gap-16">
-          <span class="logo-tag">Start Date</span>
-          <span class="logo-tag">End Date</span>
-        </div>
-        <button type="button" class="cta w-full mt-5">Apply</button>
-      </div>
+  <div class="flex items-baseline justify-between text-body mb-6 gap-16">
+    <span class="font-bold logo-tag">Hourly Rate</span>
+    <span class="text-sm">KES 1,000/hr</span>
+  </div>
+
+  <div class="flex items-baseline justify-between text-body mt-3 gap-16">
+    <span class="logo-tag">Start Date</span>
+    <span class="logo-tag">End Date</span>
+  </div>
+  <div class="flex items-baseline justify-between text-body gap-16">
+    <span class="text-sm">Aug 14, 2026</span>
+    <span class="text-sm">Aug 15, 2026</span>
+  </div>
+
+  <button type="button" class="cta w-full mt-5">Apply</button>
+</div>
     </div>
   </section>
 
@@ -48,29 +54,132 @@ block content %}
     <h2 class="text-2xl font-bold mb-3">
       Jobs <span class="logo-mark">Made Possible</span> by us
     </h2>
-    <div class="grid past_jobs_div gap-3 mb-0 md:grid-cols-6">
-      <div class="flex items-start gap-2.5">
-        <div class="flex flex-col gap-1 w-full max-w-[320px]">
-          <div class="flex items-center space-x-1.5 rtl:space-x-reverse">
-            <span class="text-sm font-semibold text-heading">Job Title</span>
-            <h2 class="text-medium text-body">Lalita</h2>
+
+    <div class="grid md:grid-cols-4 gap-3">
+      <div class="single-container past_jobs_div">
+        <div>
+          <h2 class="text-xl font-bold mb-2">Lalita</h2>
+          <div class="job-tags">
+            <span class="text-sm logo-tag font-light">Job type</span>
+            <span class="text-sm logo-tag font-light">Location</span>
+            <span class="text-sm logo-tag font-light">Date</span>
           </div>
-          <div
-            class="flex flex-col leading-1.5 p-4 bg-neutral-secondary-soft rounded-e-base rounded-es-bas"
-          >
-            <p class="text-sm text-body">
-              That's awesome. I think our users will really appreciate the
-              improvements.
-            </p>
+        </div>
+        <div>
+          <span class="text-sm mt-2 mb-3 font-light">description</span>
+        </div>
+      </div>
+
+      <div class="single-container past_jobs_div">
+        <div>
+          <h2 class="text-xl font-bold mb-2">Lalita</h2>
+          <div class="job-tags">
+            <span class="text-sm logo-tag font-light">Job type</span>
+            <span class="text-sm logo-tag font-light">Location</span>
+            <span class="text-sm logo-tag font-light">Date</span>
           </div>
-          <span class="text-sm text-body">Delivered</span>
+        </div>
+        <div>
+          <span class="text-sm mt-2 mb-3 font-light">description</span>
         </div>
       </div>
     </div>
-  </section>
-
-  <!--agency's own posted jobs -->
-  <section class="open_jobs"></section>
+  </section>  
 </div>
 
+<section class="posted_jobs">
+  <div class="posted_jobs_inner">
+    <h1 class="text-2xl p-6 font-bold mb-3">
+      Job <span class="logo-mark">Invites</span> sent by you
+    </h1>
+
+    <div class="grid md:grid-cols-2 my-4 gap-3">
+
+      <div class="single-container posted_jobs_div">
+        <div class="card-top">
+          <div>
+            <h4 class="text-xl font-bold mb-1">Runway Show — NFW</h4>
+            <span class="job-agency text-sm logo-tag">Invited: Lalita Njeri</span>
+          </div>
+          <span class="status-pill status-pending">Pending</span>
+        </div>
+
+        <div class="job-tags">
+          <span class="text-sm job-tag font-light">Runway</span>
+          <span class="text-sm job-tag font-light">Nairobi, Kenya</span>
+        </div>
+
+        <div class="job-row">
+          <span class="font-bold logo-tag">Rate</span>
+          <span class="text-sm rate-highlight">KES 1,000/hr</span>
+        </div>
+        <div class="job-row">
+          <span class="font-bold logo-tag">Date</span>
+          <span class="text-sm">Aug 14, 2026</span>
+        </div>
+
+        <p class="job-desc">
+          Looking for a model to walk in our closing segment. Full rehearsal required the day before.
+        </p>
+
+        <div class="job-actions">
+          <form action="/jobs/15/respond" method="POST">
+            <input type="hidden" name="response" value="accepted">
+            <button type="submit" class="cta w-full btn-accept">Accept</button>
+          </form>
+          <form action="/jobs/15/respond" method="POST">
+            <input type="hidden" name="response" value="declined">
+            <button type="submit" class="cta w-full btn-decline">Decline</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="single-container posted_jobs_div">
+        <div class="card-top">
+          <div>
+            <h4 class="text-xl font-bold mb-1">Editorial Shoot — Vogue EA</h4>
+            <span class="job-agency logo-tag">Invited: Wanjiru Kamau</span>
+          </div>
+          <span class="status-pill status-active">Active</span>
+        </div>
+
+        <div class="job-tags">
+          <span class="text-sm job-tag font-light">Magazine</span>
+          <span class="text-sm job-tag font-light">Westlands, Nairobi</span>
+        </div>
+
+        <div class="job-row">
+          <span class="font-bold logo-tag">Rate</span>
+          <span class="text-sm rate-highlight">KES 5,000/hr</span>
+        </div>
+        <div class="job-row">
+          <span class="font-bold logo-tag">Date</span>
+          <span class="text-sm">Aug 20, 2026</span>
+        </div>
+
+        <p class="job-desc">
+          Half-day studio shoot for the upcoming issue cover story. Wardrobe and styling provided.
+        </p>
+
+        <div class="job-actions">
+          <form action="/jobs/22/respond" method="POST">
+            <input type="hidden" name="response" value="accepted">
+            <button type="submit" class="cta w-full btn-accept" disabled>Accept</button>
+          </form>
+          <form action="/jobs/22/respond" method="POST">
+            <input type="hidden" name="response" value="declined">
+            <button type="submit" class="cta w-full btn-decline" disabled>Decline</button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+
+      
+    </div>
+  </section>
 {% endblock%}
