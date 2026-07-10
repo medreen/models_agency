@@ -1,9 +1,10 @@
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, session
 from functools import wraps
-from mydatabase import get_model_by_email, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
+from mydatabase import get_model_by_email, update_job_status_on_acceptance, get_closed_jobs, get_pending_jobs, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
 from datetime import datetime
 from flask_bcrypt import Bcrypt
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,7 +25,7 @@ def index():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'model_id' not in session or 'agency_id' not in session:
+        if 'email' not in session:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
@@ -59,7 +60,7 @@ def register_model():
        
         model = check_model_exists(email)
         if not model:
-            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            hashed_password = generate_password_hash(password)
             new_model = (
                 first_name, last_name, email, phone, hashed_password,
                 date_of_birth, gender, height_cm, weight_kg,
@@ -98,7 +99,7 @@ def register_agency():
 
         agent = check_agency_exists(email)
         if not agent:
-            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            hashed_password = generate_password_hash(password)
             new_agency = (
                 name, email, phone, hashed_password, website,
                 address, city, country, agency_type, founded_year,
@@ -121,10 +122,10 @@ def login():
         # Check if the user exists in the database
         agency_exists = check_agency_exists(email)
         model_exists = check_model_exists(email)
-        if model_exists and bcrypt.check_password_hash(model_exists[-1], password):  # Assuming password is stored in the 4th column        
+        if model_exists and check_password_hash(model_exists.get('password'), password):  # Assuming password is stored in the 4th column        
             flash('Login successful.', 'success')
             return redirect(url_for('dashboard'))  # Redirect to dashboard after successful login
-        elif agency_exists and bcrypt.check_password_hash(agency_exists[-1], password):  # Assuming password is stored in the 4th column
+        elif agency_exists and check_password_hash(agency_exists.get('password'), password):  # Assuming password is stored in the 4th column
             flash('Login successful.', 'success')
             return redirect(url_for('jobs'))  # Redirect to dashboard after successful login
             
@@ -136,36 +137,11 @@ def login():
 @app.route('/models')
 # @login_required
 def models_dashboard():
-    job_listings = get_model_jobs(session['model_id'])  # Fetch jobs for the current model
+    job_listings = get_model_jobs(session.get('model_id'))  # Fetch jobs for the current model
     collaborations = get_model_collaborations(session.get('model_id'))  # Fetch collaborations for the current model
-    agencies = get_model_agencies(session['model_id'])  # Fetch agencies for the current model
+    agencies = get_model_agencies(session.get('model_id'))  # Fetch agencies for the current model
     return render_template('models.html', job_listings=job_listings, collaborations=collaborations, agencies=agencies)
 
-@app.route('/jobs')
-# @login_required
-def jobs():
-    # get the email of the logged in user
-    is_agent = session.get('email')
-    
-
-    job_listings = get_all_jobs()  # Fetch all jobs from the database
-    return render_template('jobs.html')
-@app.route('/agency')
-# @login_required
-def agency(): 
-    agencies = get_all_agencies
-    collaborations = get_all_collaborations
-    return render_template('agency.html', agencies=agencies, collaborations=collaborations)
-
-@app.route('/dashboard')
-# @login_required
-def fetch_statistics():
-    jobs_listings = get_all_jobs()  # Fetch all jobs from the database
-    collaborations_listings = get_all_collaborations()  # Fetch all collaborations from the database
-    collaboration_models = get_all_collaboration_models()  # Fetch all collaboration models from the database
-    agency_listings = get_all_agencies()  # Fetch all agencies from the database
-    models = get_all_models()  # Fetch all models from the database
-    return render_template('dashboard.html', collaborations_listings=collaborations_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, models=models, jobs_listings=jobs_listings)
 
 @app.route('/add_job', methods=['GET', 'POST'])
 # @login_required
@@ -209,7 +185,7 @@ def add_job():
 def respond_to_job(job_id):
     model_id = session.get("model_id")  # however you're tracking the logged-in model
     if not model_id:
-        flash("Please log in to respond to job requests.")
+        flash("Log in as model to respond to job requests.")
         return redirect(url_for("login"))
 
     response = request.form.get("response")  # "accepted" or "declined"
@@ -226,14 +202,45 @@ def respond_to_job(job_id):
         flash(f"Job {response} successfully.")
     except ValueError as e:
         flash(str(e))
-
     return redirect(url_for("models_dashboard"))
 
-@app.route('/fetch_jobs')
+@app.route('/jobs')
 # @login_required
-def fetch_agency_jobs():
-    agency_jobs = get_agency_jobs(session['agency_id'])
-    return render_template('jobs.html', agency_jobs=agency_jobs)
+def jobs():
+    is_agent = session.get('agency_id')
+    is_model = session.get('model_id')
+
+    agency_jobs = get_agency_jobs(is_agent)
+    model_job_invites = get_pending_jobs(is_model)
+    closed_jobs = get_closed_jobs(is_model)
+    job_listings = get_all_jobs()
+
+    return render_template(
+        'jobs.html',
+        agency_jobs=agency_jobs,
+        model_job_invites=model_job_invites,
+        closed_jobs=closed_jobs,
+        job_listings=job_listings,
+        is_agent=is_agent,
+        is_model=is_model
+    )
+
+@app.route('/agency')
+# @login_required
+def agency(): 
+    agencies = get_all_agencies
+    collaborations = get_all_collaborations
+    return render_template('agency.html', agencies=agencies, collaborations=collaborations)
+
+@app.route('/dashboard')
+# @login_required
+def fetch_statistics():
+    jobs_listings = get_all_jobs()  # Fetch all jobs from the database
+    collaborations_listings = get_all_collaborations()  # Fetch all collaborations from the database
+    collaboration_models = get_all_collaboration_models()  # Fetch all collaboration models from the database
+    agency_listings = get_all_agencies()  # Fetch all agencies from the database
+    models = get_all_models()  # Fetch all models from the database
+    return render_template('dashboard.html', collaborations_listings=collaborations_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, models=models, jobs_listings=jobs_listings)
 
 @app.route('/fetch_collaborations')
 # @login_required

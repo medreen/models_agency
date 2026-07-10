@@ -38,7 +38,7 @@
                         <select id="assigned_model_id" name="assigned_model_id" class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body">
                             <option value="" selected>Select model</option>
                             {% for model in models %}
-                            <option value="{{ model.id }}">{{ model[1] }} {{ model[2] }}</option>
+                            <option value="{{ model.id }}">{{ model.first_name}} {{ model.last_name }}</option>
                             {% endfor %}
                         </select>
                     </div>

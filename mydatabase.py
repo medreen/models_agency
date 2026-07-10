@@ -1,6 +1,7 @@
 import psycopg2
 import os
 from dotenv import load_dotenv
+from psycopg2.extras import RealDictCursor
 
 load_dotenv()
 
@@ -13,7 +14,7 @@ try:
     print("Database connected successfully")
 except Exception as e: 
     print(f"Database not connected successfully: {e}")
-cur = conn.cursor()
+cur = conn.cursor(cursor_factory=RealDictCursor)
 
 def insert_model(values):
     try:
@@ -109,141 +110,178 @@ def insert_collaboration_model(values):
     except Exception as e:
         conn.rollback()
         print(f"Error inserting collaboration model: {e}")
+        r
 
 def get_all_models():
     try:
         cur.execute('SELECT * FROM models')
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching models: {e}")
+        return []
 
 def get_model_agencies(model_id):
     try:
         cur.execute('SELECT * FROM agency WHERE model_id = %s', (model_id,))
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching agencies: {e}")
+        return []
 
 def get_model_jobs(model_id):
     try:
         cur.execute('SELECT * FROM jobs WHERE model_id = %s', (model_id,))
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching jobs: {e}")
+        return []
 
+def get_pending_jobs(model_id):
+    try:
+        cur.execute('SELECT * FROM jobs WHERE model_id = %s AND status = %s', (model_id, 'pending'))
+        return cur.fetchall()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error fetching pending jobs: {e}")
+        return []
+        
 def get_model_collaborations(model_id):
     try:
         cur.execute('SELECT * FROM collaborations WHERE model_id = %s', (model_id,))
         return cur.fetchall()
     except Exception as e:
-        print(f"Error fetching collaborations: {e}")
+        conn.rollback()
+        print(f"Error fetching collaborations: {e}")        
+        return []
 
 def get_all_agencies():
     try:
         cur.execute('SELECT * FROM agency')
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching agencies: {e}")
+        return []
 
 def get_agency_jobs(agency_id):
     try:
         cur.execute('SELECT * FROM jobs WHERE agency_id = %s', (agency_id,))
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching jobs: {e}")
+        return []
 
 def get_agency_collaborations(agency_id):
     try:
         cur.execute('SELECT * FROM collaborations WHERE agency_id = %s', (agency_id,))
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching collaborations: {e}")
+        return []
 
 def get_all_jobs():
     try:
         cur.execute('SELECT * FROM jobs')
         return cur.fetchall()
     except Exception as e:
-        print(f"Error fetching jobs: {e}")
+        conn.rollback()
+        print(f"Error fetching jobs: {e}")        
+        return []
 
 def get_all_collaborations():
     try:
         cur.execute('SELECT * FROM collaborations')
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching collaborations: {e}")
+        return []
 
 def get_all_collaboration_models():
     try:
         cur.execute('SELECT * FROM collaboration_models')
         return cur.fetchall()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching collaboration models: {e}")
+        return []
 
 def get_model_by_email(model_id, email):
     try:
         cur.execute('SELECT * FROM models WHERE email = %s AND model_id = %s', (email, model_id))
         return cur.fetchone()
     except Exception as e:
+        conn.rollback()
         print(f"Error fetching model by email: {e}")
+        return []
 
 def check_model_exists(email):
     try:
         cur.execute('SELECT * FROM models WHERE email = %s', (email,))
         return cur.fetchone() 
     except Exception as e:
+        conn.rollback()
         print(f"Error checking if model exists: {e}")
+        return []
 
 def check_agency_exists(email):
     try:
         cur.execute('SELECT * FROM agency WHERE email = %s', (email,))
         return cur.fetchone()
     except Exception as e:
+        conn.rollback()
         print(f"Error checking if agency exists: {e}")
+        return []
+        
 
-# def update_job_status_on_acceptance(job_id: int, model_response: str):
+def update_job_status_on_acceptance(job_id: int, model_response: str):
 #     """
 #     Updates a job's status to 'active' when the assigned model accepts it.
 #     If declined, sets status to 'declined'. Otherwise leaves it as 'pending'.
 
 #     model_response should be 'accepted', 'declined', or 'pending'.
 #     """
-#     status_map = {
-#         "accepted": "active",
-#         "declined": "declined",
-#         "pending": "pending",
-#     }
+    status_map = {
+        "accepted": "active",
+        "declined": "declined",
+        "pending": "pending",
+    }
 
-#     new_status = status_map.get(model_response)
-#     if new_status is None:
-#         raise ValueError(f"Invalid model_response: {model_response}")
+    new_status = status_map.get(model_response)
+    if new_status is None:
+        raise ValueError(f"Invalid model_response: {model_response}")
 
-#     conn = get_connection()  # swap with however you're opening your connection
-#     try:
-#         with conn.cursor() as cur:
-#             cur.execute(
-#                 """
-#                 UPDATE jobs
-#                 SET status = %s
-#                 WHERE id = %s
-#                 RETURNING id, status;
-#                 """,
-#                 (new_status, job_id),
-#             )
-#             updated_row = cur.fetchone()
-#             conn.commit()
+    try:        
+            cur.execute(
+                """
+                UPDATE jobs
+                SET status = %s
+                WHERE id = %s
+                RETURNING id, status;
+                """,
+                (new_status, job_id),
+            )
+            updated_row = cur.fetchone()
+            conn.commit()
 
-#             if updated_row is None:
-#                 raise ValueError(f"No job found with id {job_id}")
+            if updated_row is None:
+                raise ValueError(f"No job found with id {job_id}")
 
-#             return updated_row
-#     finally:
-#         conn.close()
-        
-
-def get_jobs_with_status_closed(status):
-    try:
-        cur.execute('SELECT * FROM jobs WHERE is_paid = %s', (status))
-        return cur.fetchone()
+            return updated_row
     except Exception as e:
-        print(f'Error fetching closed jobs', {e})
+        conn.rollback()
+        print(f'Error updating status: {e}')
+        return []        
+
+def get_closed_jobs(model_id):
+    try:
+        cur.execute('SELECT * FROM jobs WHERE model_id = %s AND status = %s', (model_id, 'accepted'))
+        return cur.fetchall()
+    except Exception as e:
+        print(f"Error fetching closed jobs: {e}")
+        return []
