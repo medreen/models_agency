@@ -205,10 +205,11 @@ h2 {
 
 input,
 select,
-option {
+textarea,option {
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 8px;
+  color: var(--ink);
 }
 
 input::placeholder {
@@ -243,6 +244,7 @@ body {
   border-bottom: 1px solid var(--line);
 }
 
+
 .container-form {
   max-width: 600px;
   width: 100%;
@@ -258,9 +260,31 @@ body {
   width: 100%;
   padding: 2rem;
   margin-bottom: 3rem;
-  background-color: var(--paper);
-  border: 1px solid var(--line);
+  background-color: var(--ink);
+  border: 1px solid var(--paper);
   border-radius: 0.75rem;
+  color: var(--line);
+}
+
+.cta-dark {
+  background: var(--muted);
+  color: var(--paper);  
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.65rem 1.4rem;
+  border: 1px solid var(--ink);
+  border-radius: 0.25rem;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;  
+}
+
+.cta-dark:hover{
+  background-color: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line, #e4dfd5);
 }
 
 .past_jobs {
@@ -282,7 +306,7 @@ body {
 
 .past_jobs_div {
   background-color: var(--paper);
-  border: var(--ink);
+  border: 1px solid var(--ink);
   color: var(--ink);
   border-radius: 16px;
   padding: 1.5rem;

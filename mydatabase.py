@@ -63,7 +63,7 @@ def insert_job(values):
             INSERT INTO jobs (
                 title, description, agency_id, assigned_model_id,
                 job_type, status, location, city, country,
-                start_date, end_date, start_time, end_time, rate_per_hour, total_hours, total_pay, currency, is_paid, gender_required, min_height_cm, max_height_cm, category_required, created_at, updated_at
+                start_date, end_date, start_time, end_time, rate_per_hour, total_hours, currency, is_paid, gender_required, min_height_cm, max_height_cm, category_required, created_at, updated_at
             ) VALUES (
                 %s, %s, %s, %s,
                 %s, %s, %s, %s,
@@ -201,42 +201,49 @@ def check_agency_exists(email):
     except Exception as e:
         print(f"Error checking if agency exists: {e}")
 
-def update_job_status_on_acceptance(job_id: int, model_response: str):
-    """
-    Updates a job's status to 'active' when the assigned model accepts it.
-    If declined, sets status to 'declined'. Otherwise leaves it as 'pending'.
+# def update_job_status_on_acceptance(job_id: int, model_response: str):
+#     """
+#     Updates a job's status to 'active' when the assigned model accepts it.
+#     If declined, sets status to 'declined'. Otherwise leaves it as 'pending'.
 
-    model_response should be 'accepted', 'declined', or 'pending'.
-    """
-    status_map = {
-        "accepted": "active",
-        "declined": "declined",
-        "pending": "pending",
-    }
+#     model_response should be 'accepted', 'declined', or 'pending'.
+#     """
+#     status_map = {
+#         "accepted": "active",
+#         "declined": "declined",
+#         "pending": "pending",
+#     }
 
-    new_status = status_map.get(model_response)
-    if new_status is None:
-        raise ValueError(f"Invalid model_response: {model_response}")
+#     new_status = status_map.get(model_response)
+#     if new_status is None:
+#         raise ValueError(f"Invalid model_response: {model_response}")
 
-    conn = get_connection()  # swap with however you're opening your connection
-    try:
-        with conn.cursor() as cur:
-            cur.execute(
-                """
-                UPDATE jobs
-                SET status = %s
-                WHERE id = %s
-                RETURNING id, status;
-                """,
-                (new_status, job_id),
-            )
-            updated_row = cur.fetchone()
-            conn.commit()
+#     conn = get_connection()  # swap with however you're opening your connection
+#     try:
+#         with conn.cursor() as cur:
+#             cur.execute(
+#                 """
+#                 UPDATE jobs
+#                 SET status = %s
+#                 WHERE id = %s
+#                 RETURNING id, status;
+#                 """,
+#                 (new_status, job_id),
+#             )
+#             updated_row = cur.fetchone()
+#             conn.commit()
 
-            if updated_row is None:
-                raise ValueError(f"No job found with id {job_id}")
+#             if updated_row is None:
+#                 raise ValueError(f"No job found with id {job_id}")
 
-            return updated_row
-    finally:
-        conn.close()
+#             return updated_row
+#     finally:
+#         conn.close()
         
+
+def get_jobs_with_status_closed(status):
+    try:
+        cur.execute('SELECT * FROM jobs WHERE is_paid = %s', (status))
+        return cur.fetchone()
+    except Exception as e:
+        print(f'Error fetching closed jobs', {e})

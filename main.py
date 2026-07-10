@@ -137,16 +137,19 @@ def login():
 # @login_required
 def models_dashboard():
     job_listings = get_model_jobs(session['model_id'])  # Fetch jobs for the current model
-    collaborations = get_model_collaborations(session['model_id'])  # Fetch collaborations for the current model
+    collaborations = get_model_collaborations(session.get('model_id'))  # Fetch collaborations for the current model
     agencies = get_model_agencies(session['model_id'])  # Fetch agencies for the current model
     return render_template('models.html', job_listings=job_listings, collaborations=collaborations, agencies=agencies)
 
 @app.route('/jobs')
 # @login_required
 def jobs():
-    job_listings = get_all_jobs()  # Fetch all jobs from the database
-    return render_template('jobs.html', job_listings=job_listings)
+    # get the email of the logged in user
+    is_agent = session.get('email')
+    
 
+    job_listings = get_all_jobs()  # Fetch all jobs from the database
+    return render_template('jobs.html')
 @app.route('/agency')
 # @login_required
 def agency(): 
@@ -161,43 +164,39 @@ def fetch_statistics():
     collaborations_listings = get_all_collaborations()  # Fetch all collaborations from the database
     collaboration_models = get_all_collaboration_models()  # Fetch all collaboration models from the database
     agency_listings = get_all_agencies()  # Fetch all agencies from the database
-    model_listings = get_all_models()  # Fetch all models from the database
-    return render_template('dashboard.html', collaborations_listings=collaborations_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, model_listings=model_listings, jobs_listings=jobs_listings)
+    models = get_all_models()  # Fetch all models from the database
+    return render_template('dashboard.html', collaborations_listings=collaborations_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, models=models, jobs_listings=jobs_listings)
 
 @app.route('/add_job', methods=['GET', 'POST'])
 # @login_required
-def add_job():
-    verified_agent = session.get(agency_id)
-    if not verified_agent:
-        flash('Access denied for this action', 'warning')
-
+def add_job():  
     if request.method == 'POST':
         # Extract form data
-        title = request.form['title']
-        description = request.form['description']
-        agency_id = session['agency_id']  # Assuming the logged-in user is the agency
+        title = request.form['title']        
+        agency_id = session.get('agency_id')  # Assuming the logged-in user is the agency
         assigned_model_id = request.form['assigned_model_id']
-        job_type = request.form['job_type']
-        status = request.form['status']
+        job_type = request.form['job_type']        
         location = request.form['location']
         city = request.form['city']
         country = request.form['country']
         start_date = request.form['start_date']
         end_date = request.form['end_date']
-        rate_per_hour = request.form['rate_per_hour']
-        total_hours = request.form['total_hours']
-        total_pay = request.form['total_pay']
+        start_time = request.form['start_time']
+        end_time = request.form['end_time']
+        rate_per_hour = request.form['rate_per_hour']               
         currency = request.form['currency']
+        status = request.form['status']
         is_paid = request.form['is_paid']
         gender_required = request.form['gender_required']
-        min_height_cm = request.form['min_height_cm']
-        max_height_cm = request.form['max_height_cm']
         category_required = request.form['category_required']
+        min_height_cm = request.form.get('min_height-cm')
+        max_height_cm = request.form.get('max_height_cm')        
+        description = request.form['description']
         created_at = datetime.now()
         updated_at = datetime.now()
 
         # Create a tuple with the job values
-        new_job = (title, description, agency_id, assigned_model_id, job_type, status, location, city, country, start_date, end_date, start_time, end_time, rate_per_hour, total_hours, total_pay, currency, is_paid, gender_required, min_height_cm, max_height_cm, category_required, created_at, updated_at)
+        new_job = (title, agency_id, assigned_model_id, job_type, location, city, country, start_date, end_date, start_time, end_time, rate_per_hour,  currency, status, is_paid, gender_required, category_required, min_height_cm, max_height_cm,  description, created_at, updated_at)
 
         # Insert the job into the database
         insert_job(new_job)
