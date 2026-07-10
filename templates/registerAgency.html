@@ -3,12 +3,16 @@
 
 <div class="container-form p-6 mt-10">
   <form action="/register_agency" method="POST">
-    <h2 class="text-2xl font-bold mb-6">
+    <h4 class="text-2xl  font-bold mb-6">
       Create <span class="logo-mark">Agency</span> Account
-    </h2>
+    </h4>
 
     <div class="mb-6">
-      <label for="agency_name" class="block mb-2.5 text-sm font-medium text-heading">Agency Name</label>
+      <label
+        for="agency_name"
+        class="block mb-2.5 text-sm font-medium text-heading"
+        >Agency Name</label
+      >
       <input
         type="text"
         id="agency_name"
@@ -21,7 +25,9 @@
 
     <div class="grid gap-6 mb-6 md:grid-cols-2">
       <div>
-        <label for="email" class="block mb-2.5 text-sm font-medium text-heading">Email</label>
+        <label for="email" class="block mb-2.5 text-sm font-medium text-heading"
+          >Email</label
+        >
         <input
           type="email"
           id="email"
@@ -32,35 +38,26 @@
         />
       </div>
       <div>
-        <label for="phone" class="block mb-2.5 text-sm font-medium text-heading">Phone number</label>
+        <label for="phone" class="block mb-2.5 text-sm font-medium text-heading"
+          >Phone number</label
+        >
         <input
           type="tel"
           id="phone"
           name="phone"
           class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="+254-111-239-415"
-          pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}-[0-9]{3}"
+          placeholder="+254111339415"
           required
         />
       </div>
     </div>
-
     <div class="grid gap-6 mb-6 md:grid-cols-2">
       <div>
-        <label for="founded_year" class="block mb-2.5 text-sm font-medium text-heading">Founded Year</label>
-        <input
-          type="number"
-          id="founded_year"
-          name="founded_year"
-          min="1900"
-          max="2026"
-          class="bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="2015"
-          required
-        />
-      </div>
-      <div>
-        <label for="agency_type" class="block mb-2.5 text-sm font-medium text-heading">Agency Type</label>
+        <label
+          for="agency_type"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Agency Type</label
+        >
         <select
           id="agency_type"
           name="agency_type"
@@ -74,11 +71,68 @@
           <option value="vixen">Vixen</option>
         </select>
       </div>
-    </div>
 
+      <div>
+        <label
+          for="total_models"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Total Models
+        </label>
+        <input
+          type="number"
+          id="total_models"
+          name="total_models"
+          min="1"          
+          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+          placeholder="20"
+          required
+        />
+      </div>
+    </div>
     <div class="grid gap-6 mb-6 md:grid-cols-2">
       <div>
-        <label for="website" class="block mb-2.5 text-sm font-medium text-heading">Website</label>
+        <label
+          for="founded_year"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Founded Year</label
+        >
+        <input
+          type="number"
+          id="founded_year"
+          name="founded_year"
+          min="1900"
+          max="2026"
+          class="bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+          placeholder="2015"
+          required
+        />
+      </div>
+      <div>
+        <label
+          for="commission_pct"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Commission Rate %
+        </label>
+        <input
+          type="number"
+          id="commission_pct"
+          name="commission_pct"
+          min="0"
+          step="0.01"
+          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+          placeholder="20"
+          required
+        />
+      </div>
+    </div>
+
+    <div class="grid gap-6 mb-6 md:grid-cols-3">
+      <div>
+        <label
+          for="website"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Website</label
+        >
         <input
           type="url"
           id="website"
@@ -87,24 +141,45 @@
           placeholder="https://youragency.com"
         />
       </div>
+
       <div>
-        <label for="rate_per_hour" class="block mb-2.5 text-sm font-medium text-heading">Rate per hour (KES)</label>
+        <label
+          for="logo_url"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Select Agency Logo</label
+        >
         <input
-          type="number"
-          id="rate_per_hour"
-          name="rate_per_hour"
-          min="0"
-          step="0.01"
-          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="1500"
-          required
+          type="url"
+          id="logo_url"
+          name="logo_url"
+          class="bg-neutral-secondary-medium border text-heading text-sm rounded-base placeholder:text-body block w-full px-3 py-2.5"
+          placeholder="https://yourlogo.com"
+        />
+      </div>
+
+      <div>
+        <label
+          for="instagram_url"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Instagram Link</label
+        >
+        <input
+          type="url"
+          id="instagram_url"
+          name="instagram_url"
+          class="bg-neutral-secondary-medium border text-heading text-sm rounded-base placeholder:text-body block w-full px-3 py-2.5"
+          placeholder="www.instagram.com"
         />
       </div>
     </div>
 
-    <div class="grid gap-6 mb-6 md:grid-cols-2">
+    <div class="grid gap-6 mb-6 md:grid-cols-3">
       <div>
-        <label for="country" class="block mb-2.5 text-sm font-medium text-heading">Country</label>
+        <label
+          for="country"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Country</label
+        >
         <input
           type="text"
           id="country"
@@ -115,13 +190,30 @@
         />
       </div>
       <div>
-        <label for="city" class="block mb-2.5 text-sm font-medium text-heading">City</label>
+        <label for="city" class="block mb-2.5 text-sm font-medium text-heading"
+          >City</label
+        >
         <input
           type="text"
           id="city"
           name="city"
           class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
           placeholder="Nairobi"
+          required
+        />
+      </div>
+      <div>
+        <label
+          for="address"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Address</label
+        >
+        <input
+          type="text"
+          id="address"
+          name="address"
+          class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
+          placeholder="Umoja 3 Estate"
           required
         />
       </div>
@@ -174,7 +266,9 @@
       </div>
       <label for="remember" class="ms-2 text-sm font-medium text-heading">
         I agree with the
-        <a href="#" class="text-fg-brand hover:underline">terms and conditions</a>.
+        <a href="#" class="text-fg-brand hover:underline"
+          >terms and conditions</a
+        >.
       </label>
     </div>
 
@@ -186,8 +280,5 @@
     </p>
   </form>
 </div>
-
-
-
 
 {% endblock %}

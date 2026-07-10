@@ -32,12 +32,12 @@ def login_required(f):
 
 @app.route('/register_model', methods=['GET', 'POST'])
 def register_model():
-    if request.method == 'POST':      
+    if request.method == 'POST':
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         email = request.form['email']
-        password = request.form['password']
         phone = request.form['phone']
+        password = request.form['password']
         date_of_birth = request.form['date_of_birth']
         gender = request.form['gender']
         height_cm = request.form['height_cm']
@@ -49,51 +49,68 @@ def register_model():
         eye_color = request.form['eye_color']
         hair_color = request.form['hair_color']
         category = request.form['category']
+        is_available = request.form['is_available'] == 'true'
         experience_yrs = request.form['experience_yrs']
-        is_available = request.form['is_available']
         rate_per_hour = request.form['rate_per_hour']
         portfolio_url = request.form['portfolio_url']
         profile_photo_url = request.form['profile_photo_url']
+        updated_at = datetime.now()
         created_at = datetime.now()
-        updated_at = datetime.now()  
-
-        email_exists = check_model_exists(email)
-        if email_exists:        
-            flash('Account already exists.', 'warning')
+       
+        model = check_model_exists(email)
+        if not model:
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            new_model = (
+                first_name, last_name, email, phone, hashed_password,
+                date_of_birth, gender, height_cm, weight_kg,
+                bust_cm, waist_cm, hips_cm, shoe_size,
+                eye_color, hair_color, category, is_available,
+                experience_yrs, rate_per_hour, portfolio_url,
+                profile_photo_url, created_at, updated_at
+            )
+            insert_model(new_model)
+            flash('Account created successfully. Please log in.', 'success')
             return redirect(url_for('login'))
         else:
-            new_model = (first_name, last_name, email, password, phone, date_of_birth, gender, height_cm, weight_kg, bust_cm, waist_cm, hips_cm, shoe_size, eye_color, hair_color, category, experience_yrs, is_available, rate_per_hour, portfolio_url, profile_photo_url, created_at, updated_at)
-
-            # Insert the model into the database
-            insert_model(new_model)  # Insert the model into the database
-            flash('Account created successfully. Please log in.', 'success')
-           
+            flash('Account already exists.', 'warning')
     return render_template('registermodel.html')
 
+   
 @app.route('/register_agency', methods=['GET', 'POST'])
 def register_agency():
     if request.method == 'POST':
+        name = request.form['name']
         email = request.form['email']
-        agent = check_agency_exists(email)
+        phone = request.form['phone']
+        password = request.form['password']
+        website = request.form['website']
+        address = request.form['address']
+        city = request.form['city']
+        country = request.form['country']
+        agency_type = request.form['agency_type']
+        founded_year = request.form['founded_year']
+        commission_pct = request.form['commission_pct']
+        logo_url = request.form['logo_url']
+        instagram_url = request.form['instagram_url']
+        total_models = request.form['total_models']
+        updated_at = datetime.now()
+        created_at = datetime.now()
 
-        if not agent:  # Ensure account type is valid
-            name = request.form['name']
-            email = request.form['email']
-            phone = request.form['phone']
-            password = request.form['password']
-            website = request.form['website']
-            city = request.form['city']
-            country = request.form['country']
-            agency_type = request.form['agency_type']
-            founded_year = request.form['founded_year']
-            commission_pct = request.form['commission_pct']
-            new_agency = (name, email, phone, website, city, country, agency_type, founded_year, commission_pct)
+        agent = check_agency_exists(email)
+        if not agent:
+            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+            new_agency = (
+                name, email, phone, hashed_password, website,
+                address, city, country, agency_type, founded_year,
+                commission_pct,               
+                logo_url, instagram_url, created_at, updated_at, total_models
+            )
             insert_agency(new_agency)
+            return redirect(url_for('login'))
             flash('Account created successfully. Please log in.', 'success')
-        elif agent:
+        else:
             flash('Account already exists.', 'warning')
     return render_template('registerAgency.html')
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -102,16 +119,17 @@ def login():
         password = request.form['password']
 
         # Check if the user exists in the database
-        agency = check_agency_exists(session.get('agency_id'), email)
-        models = check_model_exists(email)
-        if models and bcrypt.check_password_hash(models['password'], password):  # Assuming password is stored in the 4th column        
+        agency_exists = check_agency_exists(email)
+        model_exists = check_model_exists(email)
+        if model_exists and bcrypt.check_password_hash(model_exists[-1], password):  # Assuming password is stored in the 4th column        
             flash('Login successful.', 'success')
             return redirect(url_for('dashboard'))  # Redirect to dashboard after successful login
-        elif agency and bcrypt.check_password_hash(agency['password'], password):  # Assuming password is stored in the 4th column
+        elif agency_exists and bcrypt.check_password_hash(agency_exists[-1], password):  # Assuming password is stored in the 4th column
             flash('Login successful.', 'success')
-            return redirect(url_for('dashboard'))  # Redirect to dashboard after successful login
+            return redirect(url_for('jobs'))  # Redirect to dashboard after successful login
             
         else:
+            return redirect(url_for('register_model'))
             flash('Invalid email or password.', 'danger')
     return render_template('login.html')  # Render the login form
 
@@ -144,7 +162,7 @@ def fetch_statistics():
     collaboration_models = get_all_collaboration_models()  # Fetch all collaboration models from the database
     agency_listings = get_all_agencies()  # Fetch all agencies from the database
     model_listings = get_all_models()  # Fetch all models from the database
-    return render_template('dashboard.html', collaboration_listings=collaboration_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, model_listings=model_listings, jobs_listings=jobs_listings)
+    return render_template('dashboard.html', collaborations_listings=collaborations_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, model_listings=model_listings, jobs_listings=jobs_listings)
 
 @app.route('/add_job', methods=['GET', 'POST'])
 # @login_required

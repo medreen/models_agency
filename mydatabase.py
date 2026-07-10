@@ -23,13 +23,13 @@ def insert_model(values):
                 date_of_birth, gender, height_cm, weight_kg,
                 bust_cm, waist_cm, hips_cm, shoe_size,
                 eye_color, hair_color, category, is_available,
-                experience_yrs, is_available, rate_per_hour, portfolio_url, profile_photo_url, created_at, updated_at
+                experience_yrs,  rate_per_hour, portfolio_url, profile_photo_url, created_at, updated_at
             ) VALUES (
-                %s, %s, %s, %s, %s,
                 %s, %s, %s, %s,
+                %s, %s, %s, %s,
+                %s, %s, %s, %s, %s,
+                %s, %s, %s, %s, %s,
                 %s, %s, %s, %s, %s
-                %s, %s, %s, %s, %s
-                %s, %s, %s, %s, %s, 
             )
         ''', values)
         conn.commit()
@@ -42,12 +42,12 @@ def insert_agency(values):
     try:
         cur.execute('''
             INSERT INTO agency (
-                name, email, phone, password, website, address, city, country, agency_type, founded_year, commission_pct, is_active, currency, logo_url, instagram_url, created_at, updated_at
+                name, email, phone, password, website, address, city, country, agency_type, founded_year, commission_pct, logo_url, instagram_url, created_at, updated_at,
                 total_models
             ) VALUES (
                 %s, %s, %s, %s,
                 %s, %s, %s,
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s
 
             )
         ''', values)
@@ -190,14 +190,14 @@ def get_model_by_email(model_id, email):
 def check_model_exists(email):
     try:
         cur.execute('SELECT * FROM models WHERE email = %s', (email,))
-        return cur.fetchone() is not None
+        return cur.fetchone() 
     except Exception as e:
         print(f"Error checking if model exists: {e}")
 
 def check_agency_exists(email):
     try:
         cur.execute('SELECT * FROM agency WHERE email = %s', (email,))
-        return cur.fetchone() is not None
+        return cur.fetchone()
     except Exception as e:
         print(f"Error checking if agency exists: {e}")
 
@@ -239,3 +239,4 @@ def update_job_status_on_acceptance(job_id: int, model_response: str):
             return updated_row
     finally:
         conn.close()
+        

@@ -4,19 +4,21 @@ block content %}
 <div class="jobs_page">
   <!--declined jobs open for reapplication -->
   <section class="open_jobs">
-    <h2 class="text-2xl font-bold mb-3">
+    <!-- <h2 class="text-2xl mt-6 font-bold mb-3">
       Jobs <span class="logo-mark">Available</span> for applications
-    </h2>
+    </h2> -->
     <div class="grid gap-3 mb-0 md:grid-cols-4">
-      <div class="w-full container">
-  <span class="status-pill status-active">Reopened</span>
+      <div class="w-full mt-6 container">
+  <span class="logo-tag font-semibold">Reopened</span>
 
-  <div class="flex items-baseline text-heading">
-    <span class="text-5xl font-extrabold tracking-tight">Lalita</span>
+  <div class="flex items-baseline gap-3 justify-between text-heading">
+
+    <span class="text-3xl font-extrabold tracking-tight">Lalita</span>
+    <span class="text-sm logo-tag font-light"> - Job Title</span>
   </div>
 
   <div class="block mb-3 mt-4">
-    <h3 class="text-3xl logo-mark font-light">Job Title</h3>
+    
     <p class="text-sm">description</p>
   </div>
 
@@ -49,43 +51,8 @@ block content %}
     </div>
   </section>
 
-  <!--past jobs -->
-  <section class="past_jobs mt-8">
-    <h2 class="text-2xl font-bold mb-3">
-      Jobs <span class="logo-mark">Made Possible</span> by us
-    </h2>
+  
 
-    <div class="grid md:grid-cols-4 gap-3">
-      <div class="single-container past_jobs_div">
-        <div>
-          <h2 class="text-xl font-bold mb-2">Lalita</h2>
-          <div class="job-tags">
-            <span class="text-sm logo-tag font-light">Job type</span>
-            <span class="text-sm logo-tag font-light">Location</span>
-            <span class="text-sm logo-tag font-light">Date</span>
-          </div>
-        </div>
-        <div>
-          <span class="text-sm mt-2 mb-3 font-light">description</span>
-        </div>
-      </div>
-
-      <div class="single-container past_jobs_div">
-        <div>
-          <h2 class="text-xl font-bold mb-2">Lalita</h2>
-          <div class="job-tags">
-            <span class="text-sm logo-tag font-light">Job type</span>
-            <span class="text-sm logo-tag font-light">Location</span>
-            <span class="text-sm logo-tag font-light">Date</span>
-          </div>
-        </div>
-        <div>
-          <span class="text-sm mt-2 mb-3 font-light">description</span>
-        </div>
-      </div>
-    </div>
-  </section>  
-</div>
 
 <section class="posted_jobs">
   <div class="posted_jobs_inner">
@@ -98,17 +65,16 @@ block content %}
       <div class="single-container posted_jobs_div">
         <div class="card-top">
           <div>
-            <h4 class="text-xl font-bold mb-1">Runway Show — NFW</h4>
+            <h4 class="text-xl font-bold mb-1">Runway Show — <span class="logo-mark">NFW</span></h4>
             <span class="job-agency text-sm logo-tag">Invited: Lalita Njeri</span>
           </div>
           <span class="status-pill status-pending">Pending</span>
         </div>
 
-        <div class="job-tags">
-          <span class="text-sm job-tag font-light">Runway</span>
+        <div class="job-tags">          
           <span class="text-sm job-tag font-light">Nairobi, Kenya</span>
         </div>
-
+        
         <div class="job-row">
           <span class="font-bold logo-tag">Rate</span>
           <span class="text-sm rate-highlight">KES 1,000/hr</span>
@@ -137,14 +103,14 @@ block content %}
       <div class="single-container posted_jobs_div">
         <div class="card-top">
           <div>
-            <h4 class="text-xl font-bold mb-1">Editorial Shoot — Vogue EA</h4>
+            <h4 class="text-xl font-bold mb-1">Editorial Shoot — <span class="logo-mark">Vogue EA</span></h4>
             <span class="job-agency logo-tag">Invited: Wanjiru Kamau</span>
           </div>
           <span class="status-pill status-active">Active</span>
         </div>
 
         <div class="job-tags">
-          <span class="text-sm job-tag font-light">Magazine</span>
+          
           <span class="text-sm job-tag font-light">Westlands, Nairobi</span>
         </div>
 
@@ -177,7 +143,42 @@ block content %}
   </div>
 </section>
 
+ <!--past jobs -->
+  <section class="past_jobs mt-8">
+    <!-- <h2 class="text-2xl font-bold mb-3">
+      Jobs <span class="logo-mark">Made Possible</span> by us
+    </h2> -->
 
+    <div class="grid md:grid-cols-4 gap-3">
+      <div class="single-container mt-6 past_jobs_div">
+        <div>
+          <h2 class="text-xl font-bold mb-2">Lalita</h2>
+          <div class="job-tags">
+            <span class="text-sm logo-tag font-light">Job type</span>
+            <span class="text-sm logo-tag font-light">Location</span>
+            <span class="text-sm logo-tag font-light">Date</span>
+          </div>
+        </div>
+        <div>
+          <span class="text-sm mt-2 mb-3 font-light">description</span>
+        </div>
+      </div>
+
+      <div class="single-container mt-6 past_jobs_div">
+        <div>
+          <h2 class="text-xl font-bold mb-2">Lalita</h2>
+          <div class="job-tags">
+            <span class="text-sm logo-tag font-light">Job type</span>
+            <span class="text-sm logo-tag font-light">Location</span>
+            <span class="text-sm logo-tag font-light">Date</span>
+          </div>
+        </div>
+        <div>
+          <span class="text-sm mt-2 mb-3 font-light">description</span>
+        </div>
+      </div>
+    </div>
+  </section> 
 
       
     </div>

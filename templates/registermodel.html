@@ -3,9 +3,9 @@
 
 <div class="container-form p-6 mt-10">
   <form action="/register_model" method="POST">
-    <h2 class="text-2xl font-bold mb-6">
+    <h4 class="text-2xl font-bold mb-6">
       Create <span class="logo-mark">Model</span> Account
-    </h2>
+    </h4>
 
     <div class="mb-6">
       <label
@@ -61,8 +61,7 @@
           id="phone"
           name="phone"
           class="bg-neutral-secondary-medium border text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
-          placeholder="+254-111-239-415"
-          pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}-[0-9]{3}"
+          placeholder="+254111239415"          
           required
         />
       </div>
@@ -76,10 +75,10 @@
           >Profile Photo</label
         >
         <input
-          type="file"
+          type="url"
           id="profile"
-          name="profile_photo_url"
-          accept="image/*"
+          name="profile_photo_url"   
+          placeholder="https://your-profile.com"       
           class="bg-neutral-secondary-medium border text-heading text-sm rounded-base placeholder:text-body block w-full px-3 py-2.5"
           required
         />
@@ -118,7 +117,7 @@
       </div>
       <div>
         <label
-          for="gender"
+          for="is_available"
           class="block mb-2.5 text-sm font-medium text-heading"
           >Gender</label
         >
@@ -329,20 +328,24 @@
       </div>
     </div>
 
-    <div class="mb-6">
-      <label class="switch-label">
-        <input
-          type="checkbox"
-          id="available"
+      <div>
+        <label
+          for="is_available"
+          class="block mb-2.5 text-sm font-medium text-heading"
+          >Available for booking</label
+        >
+        <select
+          id="is_available"
           name="is_available"
-          value="true"
-          class="switch-input"
-          checked
-        />
-        <div class="switch-track"></div>
-        <span class="switch-text">Available for booking</span>
-      </label>
-    </div>
+          class="block w-full px-3 py-2.5 bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs"
+        >
+          <option selected disabled>Choose availabilty</option>
+          <option value="true">True</option>
+          <option value="false">False</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    
 
     <div class="mb-6">
       <div class="flex items-center justify-between mb-2.5">
@@ -372,7 +375,7 @@
       <input
         type="password"
         id="confirm_password"
-        name="confirm_password"
+        name="confirm_password"        
         class="bg-neutral-secondary-medium border text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body"
         placeholder="•••••••••"
         required

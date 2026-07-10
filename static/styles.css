@@ -258,7 +258,7 @@ body {
   width: 100%;
   padding: 2rem;
   margin-bottom: 3rem;
-  background-color: #f5f5f5;
+  background-color: var(--paper);
   border: 1px solid var(--line);
   border-radius: 0.75rem;
 }
@@ -281,9 +281,9 @@ body {
 }
 
 .past_jobs_div {
-  background-color: var(--ink);
+  background-color: var(--paper);
   border: var(--ink);
-  color: var(--paper);
+  color: var(--ink);
   border-radius: 16px;
   padding: 1.5rem;
   /* max-width: 350px;*/
@@ -292,7 +292,7 @@ body {
   /* height: 100%;  */
   /* backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px); /* Safari support */
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+ 
 }
 
 h1 {
@@ -323,12 +323,13 @@ h3 {
 }
 
 .posted_jobs_div {
-  background-color: #f5f5f5;
+  background-color: #f5f5f5c8;
   border: 1px solid var(--line, #e4dfd5);
   border-radius: 16px;
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
 }
 
 .card-top {
@@ -393,7 +394,7 @@ h3 {
 }
 
 .posted_jobs {
-  background-color: #242323aa;
+  background-color: var(--paper);
   padding: 0;
   margin: 0;
   width: 100vw;
@@ -424,7 +425,7 @@ h3 {
 }
 
 .btn-decline {
-  background: transparent;
+  background: #f5f5f5;
   color: var(--ink, #17140f);
   border-color: var(--line, #e4dfd5);
 }
