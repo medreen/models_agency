@@ -157,12 +157,13 @@ block content %}
           <span class="text-sm font-light">{{ job.description }}</span>
         </div>
         <div class="job-actions">
-          <form action="/jobs/{{ job.id }}/status" method="POST">
-            <input type="hidden" name="status" value="true" />
+          <!-- <form action="/jobs/{{ job.id }}/status" method="POST">
+            <input type="hidden" name="status" value="true" /> -->
             <button type="submit" class="cta w-full btn-accept">
-              Make Payment
+              <a href="https://www.safaricom.co.ke/lipa-na-m-pesa">Make Payment</a>
+              
             </button>
-          </form>
+          <!-- </form> -->
         </div>
       </div>
       {% endfor %}

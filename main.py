@@ -19,8 +19,15 @@ jobs_bp = Blueprint("jobs", __name__)
 bcrypt = Bcrypt(app)
 
 @app.route('/')
-def index():
-    return render_template('index.html')
+def home():
+    featured_models = get_all_models()[:4]   # or a dedicated "featured" query
+    featured_agencies = get_all_agencies()[:4]
+    stats = {
+        'total_models': len(get_all_models()),
+        'total_agencies': len(get_all_agencies()),
+        'total_jobs': len(get_all_jobs()),
+    }
+    return render_template('index.html', featured_models=featured_models, featured_agencies=featured_agencies, stats=stats)
 
 def login_required(f):
     @wraps(f)
