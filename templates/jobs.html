@@ -1,185 +1,268 @@
 {% extends 'base.html'%} {% block title%} Jobs & Collaborations {% endblock%} {%
 block content %}
-
 <div class="jobs_page">
   <!--declined jobs open for reapplication -->
+
   <section class="open_jobs">
-    
-    <!-- <h2 class="text-2xl mt-6 font-bold mb-3">
-      Jobs <span class="logo-mark">Available</span> for applications
-    </h2> -->
-    <div class="grid gap-3 mb-0 md:grid-cols-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-3">
+      {% for job in job_listings %}
       <div class="w-full mt-6 container">
-  <span class="logo-tag font-semibold">Reopened</span>
+        {% if job.status in ['cancelled', 'pending'] %}
+        <span class="logo-tag font-semibold">open jobs</span>
 
-  <div class="flex items-baseline gap-3 justify-between text-heading">
+        {% elif job.status in ['confirmed', 'completed'] %}
+        <span class="logo-tag font-semibold">closed</span>
 
-    <span class="text-3xl font-extrabold tracking-tight">Lalita</span>
-    <span class="text-sm logo-tag font-light"> - Job Title</span>
-  </div>
+        {% endif %}
+        <div class="flex items-baseline gap-3 justify-between text-heading">
+          <span class="text-3xl font-extrabold tracking-tight"
+            >{{ job.title }}</span
+          >
+          <span class="text-sm logo-tag font-light"> - {{ job.job_type }}</span>
+        </div>
 
-  <div class="block mb-3 mt-4">
-    
-    <p class="text-sm">description</p>
-  </div>
+        <div class="block mb-3 mt-4">
+          <p class="text-sm">{{ job.description }}</p>
+        </div>
 
-  <div class="flex items-baseline justify-between text-body gap-16">
-    <span class="font-bold logo-tag">Category</span>
-    <span class="text-sm">Runway</span>
-  </div>
+        <div class="flex items-baseline justify-between text-body gap-16">
+          <span class="font-bold logo-tag">{{ job.category_required }}</span>
+          <span class="text-sm">{{ job.city }}, {{ job.country }}</span>
+        </div>
 
-  <div class="flex items-baseline justify-between text-body gap-16">
-    <span class="font-bold logo-tag">Gender</span>
-    <span class="text-sm">Female</span>
-  </div>
+        <div class="flex items-baseline justify-between text-body gap-16">
+          <span class="font-bold logo-tag">Gender</span>
+          <span class="text-sm">{{ job.gender_required }}</span>
+        </div>
 
-  <div class="flex items-baseline justify-between text-body mb-6 gap-16">
-    <span class="font-bold logo-tag">Hourly Rate</span>
-    <span class="text-sm">KES 1,000/hr</span>
-  </div>
+        <div class="flex items-baseline justify-between text-body mb-6 gap-16">
+          <span class="font-bold logo-tag">Hourly Rate</span>
+          <span class="text-sm"
+            >{{ job.currency }} {{ job.rate_per_hour }}/hr</span
+          >
+        </div>
 
-  <div class="flex items-baseline justify-between text-body mt-6 gap-16">
-    <span class="logo-tag">Start Date</span>
-    <span class="logo-tag">End Date</span>
-  </div>
-  <div class="flex items-baseline justify-between text-body gap-16">
-    <span class="text-sm">Aug 14, 2026</span>
-    <span class="text-sm">Aug 15, 2026</span>
-  </div>
-
-  <button type="button" class="cta-dark w-full mt-5">Apply</button>
-</div>
+        <div class="flex items-baseline justify-between text-body mt-6 gap-16">
+          <span class="logo-tag">Start Date</span>
+          <span class="logo-tag">End Date</span>
+        </div>
+        <div class="flex items-baseline justify-between text-body gap-16">
+          <span class="text-sm">{{ job.start_date }}</span>
+          <span class="text-sm">{{ job.end_date }}</span>
+        </div>
+        {% if job.status in ['confirmed', 'completed']%}
+        <button type="button" class="cta-dark btn-decline w-full mt-5">
+          Closed
+        </button>
+        {% elif job.status in ['pending', 'cancelled' ]%}
+        <button type="button" class="cta-dark w-full mt-5">
+          <a
+            href="https://mail.google.com/mail/?view=cm&fs=1&to=youraddress@gmail.com&su=Application for {{ job.title }}&body=Hi, I'm interested in applying for the {{ job.title }} position at your agency."
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Apply
+          </a>
+        </button>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
   </section>
 
-<section class="posted_jobs">
-  <div class="posted_jobs_inner">
-    <h1 class="text-2xl p-6 font-bold mb-3">
-      Job <span class="logo-mark">Invites</span> sent by you
-    </h1>
-
-    <div class="grid md:grid-cols-2 my-4 gap-3">
-
-      <div class="single-container posted_jobs_div">
-        <div class="card-top">
-          <div>
-            <h4 class="text-xl font-bold mb-1">Runway Show — <span class="logo-mark">NFW</span></h4>
-            <span class="job-agency text-sm">Invited: Lalita Njeri</span>
+  {% if is_agent %}
+  <section class="posted_jobs">
+    <div class="posted_jobs_inner">
+      <h1 class="text-2xl p-6 font-bold mb-3">
+        Job <span class="logo-mark">Invites</span> sent by you
+      </h1>
+      <div class="grid md:grid-cols-3 gap-3">
+        {% for agency_job in agency_jobs %}
+        <div class="single-container posted_jobs_div">
+          <div class="card-top">
+            <div>
+              <h4 class="text-xl font-bold mb-1">
+                {{ agency_job.title }} — <span class="logo-mark">{{agency_job.category_required}}</span>
+              </h4>
+              <span class="job-agency text-sm"
+                >Job will take {{agency_job.total_hours}} hours
+              </span>
+            </div>
+            <span class="status-pill status-pending"
+              >{{ agency_job.status }}</span
+            >
           </div>
-          <span class="status-pill status-pending">Pending</span>
-        </div>
 
-        <div class="job-tags">          
-          <span class="text-sm logo-tag font-light">Nairobi, Kenya</span>
-        </div>
-        
-        <div class="job-row">
-          <span class="font-bold logo-tag">Rate</span>
-          <span class="text-sm rate-highlight">KES 1,000/hr</span>
-        </div>
-        <div class="job-row">
-          <span class="font-bold logo-tag">Date</span>
-          <span class="text-sm">Aug 14, 2026</span>
-        </div>
-
-        <p class="job-desc">
-          Looking for a model to walk in our closing segment. Full rehearsal required the day before.
-        </p>
-
-        <div class="job-actions">
-          <form action="/jobs/15/respond" method="POST">
-            <input type="hidden" name="response" value="accepted">
-            <button type="submit" class="cta w-full btn-accept">Accept</button>
-          </form>
-          <form action="/jobs/15/respond" method="POST">
-            <input type="hidden" name="response" value="declined">
-            <button type="submit" class="cta w-full btn-decline">Decline</button>
-          </form>
-        </div>
-      </div>
-
-      <div class="single-container posted_jobs_div">
-        <div class="card-top">
-          <div>
-            <h4 class="text-xl font-bold mb-1">Editorial Shoot — <span class="logo-mark">Vogue EA</span></h4>
-            <span class="job-agency logo-tag">Invited: Wanjiru Kamau</span>
-          </div>
-          <span class="status-pill status-active">Active</span>
-        </div>
-
-        <div class="job-tags">
-          
-          <span class="text-sm job-tag font-light">Westlands, Nairobi</span>
-        </div>
-
-        <div class="job-row">
-          <span class="font-bold logo-tag">Rate</span>
-          <span class="text-sm rate-highlight">KES 5,000/hr</span>
-        </div>
-        <div class="job-row">
-          <span class="font-bold logo-tag">Date</span>
-          <span class="text-sm">Aug 20, 2026</span>
-        </div>
-
-        <p class="job-desc">
-          Half-day studio shoot for the upcoming issue cover story. Wardrobe and styling provided.
-        </p>
-
-        <div class="job-actions">
-          <form action="/jobs/22/respond" method="POST">
-            <input type="hidden" name="response" value="accepted">
-            <button type="submit" class="cta w-full btn-accept" disabled>Accept</button>
-          </form>
-          <form action="/jobs/22/respond" method="POST">
-            <input type="hidden" name="response" value="declined">
-            <button type="submit" class="cta w-full btn-decline" disabled>Decline</button>
-          </form>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
- <!--past jobs -->
-  <section class="past_jobs mt-8">
-    <!-- <h2 class="text-2xl font-bold mb-3">
-      Jobs <span class="logo-mark">Made Possible</span> by us
-    </h2> -->
-
-    <div class="grid md:grid-cols-4 gap-3">
-      <div class="single-container mt-6 past_jobs_div">
-        <div>
-          <span class="text-xl font-bold mb-2">Lalita </span>
-          <span class="text-sm font-light capitalize">| Job Title</span>
-          <div class="job-tags justify-between">
-            <span class="text-sm logo-tag font-light">Job type</span>
-            <span class="text-sm logo-tag font-light">Location</span>
-            <span class="text-sm logo-tag font-light">Date</span>
-          </div>
-        </div>
-        <div>
-          <span class="text-sm mb-3 font-light">description</span>
-        </div>
-      </div>
-
-      <div class="single-container mt-6 past_jobs_div">
-        <div>
-          <h2 class="text-xl font-bold mb-2">Lalita</h2>
           <div class="job-tags">
-            <span class="text-sm logo-tag font-light">Job type</span>
-            <span class="text-sm logo-tag font-light">Location</span>
-            <span class="text-sm logo-tag font-light">Date</span>
+            <span class="text-sm logo-tag font-light"
+              >{{ agency_job.location }} {{ agency_job.city }}</span
+            >
           </div>
+
+          <div class="job-row">
+            <span class="font-bold logo-tag">Rate</span>
+            <span class="text-sm rate-highlight"
+              > {{agency_job.currency}} {{ agency_job.rate_per_hour }}/hr</span
+            >
+          </div>
+          <div class="job-row">
+            <span class="font-bold logo-tag">Total Pay</span>
+            <span class="text-sm">  {{agency_job.currency}} {{ agency_job.total_pay }}</span>
+          </div>
+          <div class="job-row">
+            <span class="font-bold logo-tag">Date</span>
+            <span class="text-sm">{{ agency_job.start_date }}</span>
+          </div>
+
+          <p class="job-desc">{{ agency_job.description }}</p>
+
+          <button type="button" class="cta w-full">
+            {{ agency_job.status }}
+          </button>
         </div>
-        <div>
-          <span class="text-sm mt-2 mb-3 font-light">description</span>
-        </div>
+        {% endfor %}
       </div>
     </div>
-  </section> 
+  </section>
 
-      
+  <section class="past_jobs mt-8">
+    <div class="grid md:grid-cols-4 gap-3">
+      {% for job in active_jobs %}
+      <div class="single-container mt-6 past_jobs_div">
+        <div>
+          <span class="text-xl font-bold capitalize mb-2">{{ job.title }}</span>
+          <div>
+            <span class="text-sm font-light capitalize"
+              >Paid : {{ job.is_paid }}</span
+            >
+          </div>
+          <div class="mt-5 gap-4">
+            <div class="mt-5 gap-0">
+              <div
+                class="flex items-baseline justify-between text-body mt-6 gap-3"
+              >
+                <span class="logo-tag">Rate Per Hour</span>
+                <span class="logo-tag">Total Hours</span>
+                <span class="logo-tag">Total Pay</span>
+              </div>
+              <div class="flex items-baseline justify-between text-body gap-3">
+                <span class="text-sm">{{ job.rate_per_hour }}</span>
+                <span class="text-sm">{{ job.total_hours }}</span>
+                <span class="text-sm">{{ job.total_pay }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <span class="text-sm font-light">{{ job.description }}</span>
+        </div>
+        <div class="job-actions">
+          <form action="/jobs/{{ job.id }}/status" method="POST">
+            <input type="hidden" name="status" value="true" />
+            <button type="submit" class="cta w-full btn-accept">
+              Make Payment
+            </button>
+          </form>
+        </div>
+      </div>
+      {% endfor %}
     </div>
   </section>
-{% endblock%}
+  {% endif %} {% if is_model %}
+  <section class="posted_jobs">
+    <div class="posted_jobs_inner">
+      <h1 class="text-2xl p-6 font-bold mb-3">
+        Job <span class="logo-mark">Invites</span>
+      </h1>
+      <div class="grid md:grid-cols-3 my-4 gap-3">
+        {% for pending_job in pending_jobs %}
+        <div class="single-container posted_jobs_div">
+          <div class="card-top">
+            <div>
+              <h4 class="text-xl font-bold mb-1">
+                {{ pending_job.title }} — <span class="logo-mark">NFW</span>
+              </h4>
+              <span class="job-agency text-sm"
+                >Invited: {{ pending_job.assigned_model }}</span
+              >
+            </div>
+            <span class="status-pill status-pending"
+              >{{ pending_job.status }}</span
+            >
+          </div>
+
+          <div class="job-tags">
+            <span class="text-sm logo-tag font-light"
+              >{{ pending_job.location }} {{ pending_job.city }}</span
+            >
+          </div>
+
+          <div class="job-row">
+            <span class="font-bold logo-tag">Rate</span>
+            <span class="text-sm rate-highlight"
+              >{{ pending_job.rate_per_hour }}/hr</span
+            >
+          </div>
+          <div class="job-row">
+            <span class="font-bold logo-tag">Date</span>
+            <span class="text-sm">{{ pending_job.start_date }}</span>
+          </div>
+
+          <p class="job-desc">{{ pending_job.description }}</p>
+
+          <div class="job-actions">
+            <form action="/jobs/{{ pending_job.id }}/respond" method="POST">
+              <input type="hidden" name="response" value="accepted" />
+              <button type="submit" class="cta w-full btn-accept">
+                Accept
+              </button>
+            </form>
+            <form action="/jobs/{{ pending_job.id }}/respond" method="POST">
+              <input type="hidden" name="response" value="declined" />
+              <button type="submit" class="cta w-full btn-decline">
+                Decline
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  <!--past jobs -->
+  <section class="past_jobs mt-8">
+    <div class="grid md:grid-cols-4 gap-3">
+      {% for job in model_jobs %}
+      <div class="single-container mt-6 past_jobs_div">
+        <div>
+          <span class="text-xl font-bold capitalize mb-2">{{ job.title }}</span>
+          <div>
+            <span class="text-sm font-light capitalize"
+              >Payment done : {{ job.is_paid }}</span
+            >
+          </div>
+          <div class="mt-5 gap-2">
+            <div
+              class="flex items-baseline justify-between text-body mt-6 gap-16"
+            >
+              <span class="logo-tag">Rate Per Hour</span>
+              <span class="logo-tag">Total Hours</span>
+              <span class="logo-tag">Total Pay</span>
+            </div>
+            <div class="flex items-baseline justify-between text-body gap-16">
+              <span class="text-sm">{{ job.rate_per_hour }}</span>
+              <span class="text-sm">{{ job.total_hours }}</span>
+              <span class="text-sm">{{ job.total_pay }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <span class="text-sm font-light">{{ job.description }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+{% endif %} {% endblock%}

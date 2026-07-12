@@ -240,47 +240,41 @@ def check_agency_exists(email):
         
 
 def update_job_status_on_acceptance(job_id: int, model_response: str):
-#     """
-#     Updates a job's status to 'active' when the assigned model accepts it.
-#     If declined, sets status to 'declined'. Otherwise leaves it as 'pending'.
+    """
+    Updates a job's status based on the model's response.
+    model_response should be 'accepted', 'declined', or 'pending'.
+    """
+    valid_statuses = ('accepted', 'declined', 'pending')
 
-#     model_response should be 'accepted', 'declined', or 'pending'.
-#     """
-    status_map = {
-        "accepted": "active",
-        "declined": "declined",
-        "pending": "pending",
-    }
-
-    new_status = status_map.get(model_response)
-    if new_status is None:
+    if model_response not in valid_statuses:
         raise ValueError(f"Invalid model_response: {model_response}")
 
-    try:        
-            cur.execute(
-                """
-                UPDATE jobs
-                SET status = %s
-                WHERE id = %s
-                RETURNING id, status;
-                """,
-                (new_status, job_id),
-            )
-            updated_row = cur.fetchone()
-            conn.commit()
+    try:
+        cur.execute(
+            """
+            UPDATE jobs
+            SET status = %s
+            WHERE id = %s
+            RETURNING id, status;
+            """,
+            (model_response, job_id),
+        )
+        updated_row = cur.fetchone()
+        conn.commit()
 
-            if updated_row is None:
-                raise ValueError(f"No job found with id {job_id}")
+        if updated_row is None:
+            raise ValueError(f"No job found with id {job_id}")
 
-            return updated_row
+        return updated_row
     except Exception as e:
         conn.rollback()
-        print(f'Error updating status: {e}')
-        return []        
+        print(f"Error updating status: {e}")
+        return None
 
+        
 def get_active_jobs(agency_id):
     try:
-        cur.execute('SELECT * FROM jobs WHERE agency_id = %s AND status = %s', (agency_id, 'active'))
+        cur.execute('SELECT * FROM jobs WHERE agency_id = %s AND status = %s', (agency_id, 'confirmed'))
         return cur.fetchall()
     except Exception as e:
         print(f"Error fetching closed jobs: {e}")

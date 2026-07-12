@@ -122,25 +122,24 @@ def login():
         # Check if the user exists in the database
         agency_exists = check_agency_exists(email)
         model_exists = check_model_exists(email)
-        if model_exists and check_password_hash(model_exists.get('password'), password):  # Assuming password is stored in the 4th column        
+        if model_exists and check_password_hash(model_exists.get('password'), password):
+            session['model_id'] = model_exists['id']  # adjust key name to match your actual column
             flash('Login successful.', 'success')
-            return redirect(url_for('dashboard'))  # Redirect to dashboard after successful login
-        elif agency_exists and check_password_hash(agency_exists.get('password'), password):  # Assuming password is stored in the 4th column
+            return redirect(url_for('dashboard'))
+        elif agency_exists and check_password_hash(agency_exists.get('password'), password):
+            session['agency_id'] = agency_exists['id']  # adjust key name to match your actual column
             flash('Login successful.', 'success')
-            return redirect(url_for('jobs'))  # Redirect to dashboard after successful login
-            
+            return redirect(url_for('jobs'))
         else:
-            return redirect(url_for('register_model'))
+            return redirect(url_for('index'))
             flash('Invalid email or password.', 'danger')
     return render_template('login.html')  # Render the login form
 
 @app.route('/models')
 # @login_required
 def models_dashboard():
-    job_listings = get_model_jobs(session.get('model_id'))  # Fetch jobs for the current model
-    collaborations = get_model_collaborations(session.get('model_id'))  # Fetch collaborations for the current model
-    agencies = get_model_agencies(session.get('model_id'))  # Fetch agencies for the current model
-    return render_template('models.html', job_listings=job_listings, collaborations=collaborations, agencies=agencies)
+    models = get_all_models
+    return render_template('models.html', models = models)
 
 
 @app.route('/add_job', methods=['GET', 'POST'])
@@ -210,20 +209,21 @@ def respond_to_job(job_id):
 @app.route('/jobs')
 # @login_required
 def jobs():
+    
     is_agent = None
     agency_jobs = []
     active_jobs = []
     model_jobs = []
     pending_jobs = []
 
-    if session.get('agency_id'):
+    if 'agency_id' in session:
         is_agent = session.get('agency_id')
         agency_jobs = get_agency_jobs(is_agent)
         active_jobs = get_active_jobs(is_agent)
     else:
         model = session.get('model_id')
         model_jobs = get_model_jobs(model)
-        pending_jobs = get_pending_jobs(model)
+        pending_jobs = get_pending_jobs(model)        
 
     job_listings = get_all_jobs()
 
