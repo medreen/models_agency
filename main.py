@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, session
 from functools import wraps
-from mydatabase import get_model_by_email, update_job_status_on_acceptance, get_closed_jobs, get_pending_jobs, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
+from mydatabase import get_model_by_email, update_job_status_on_acceptance, get_active_jobs, get_pending_jobs, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
 from datetime import datetime
 from flask_bcrypt import Bcrypt
 import os
@@ -145,13 +145,14 @@ def models_dashboard():
 
 @app.route('/add_job', methods=['GET', 'POST'])
 # @login_required
-def add_job():  
+def add_job():
     if request.method == 'POST':
-        # Extract form data
-        title = request.form['title']        
-        agency_id = session.get('agency_id')  # Assuming the logged-in user is the agency
+        title = request.form['title']
+        description = request.form['description']
+        agency_id = session.get('agency_id')
         assigned_model_id = request.form['assigned_model_id']
-        job_type = request.form['job_type']        
+        job_type = request.form['job_type']
+        status = request.form['status']
         location = request.form['location']
         city = request.form['city']
         country = request.form['country']
@@ -159,27 +160,29 @@ def add_job():
         end_date = request.form['end_date']
         start_time = request.form['start_time']
         end_time = request.form['end_time']
-        rate_per_hour = request.form['rate_per_hour']               
+        rate_per_hour = request.form['rate_per_hour']
+        total_hours = request.form['total_hours']
         currency = request.form['currency']
-        status = request.form['status']
         is_paid = request.form['is_paid']
         gender_required = request.form['gender_required']
+        min_height_cm = request.form.get('min_height_cm')
+        max_height_cm = request.form.get('max_height_cm')
         category_required = request.form['category_required']
-        min_height_cm = request.form.get('min_height-cm')
-        max_height_cm = request.form.get('max_height_cm')        
-        description = request.form['description']
         created_at = datetime.now()
         updated_at = datetime.now()
 
-        # Create a tuple with the job values
-        new_job = (title, agency_id, assigned_model_id, job_type, location, city, country, start_date, end_date, start_time, end_time, rate_per_hour,  currency, status, is_paid, gender_required, category_required, min_height_cm, max_height_cm,  description, created_at, updated_at)
+        new_job = (
+            title, description, agency_id, assigned_model_id,
+            job_type, status, location, city, country,
+            start_date, end_date, start_time, end_time, rate_per_hour,
+            total_hours, currency, is_paid, gender_required,
+            min_height_cm, max_height_cm, category_required, created_at, updated_at
+        )
 
-        # Insert the job into the database
         insert_job(new_job)
         return redirect(url_for('jobs'))
 
-    return render_template('dashboard.html')  
-
+    return render_template('dashboard.html')
 
 @jobs_bp.route("/jobs/<int:job_id>/respond", methods=["POST"])
 def respond_to_job(job_id):
@@ -207,24 +210,32 @@ def respond_to_job(job_id):
 @app.route('/jobs')
 # @login_required
 def jobs():
-    is_agent = session.get('agency_id')
-    is_model = session.get('model_id')
+    is_agent = None
+    agency_jobs = []
+    active_jobs = []
+    model_jobs = []
+    pending_jobs = []
 
-    agency_jobs = get_agency_jobs(is_agent)
-    model_job_invites = get_pending_jobs(is_model)
-    closed_jobs = get_closed_jobs(is_model)
+    if session.get('agency_id'):
+        is_agent = session.get('agency_id')
+        agency_jobs = get_agency_jobs(is_agent)
+        active_jobs = get_active_jobs(is_agent)
+    else:
+        model = session.get('model_id')
+        model_jobs = get_model_jobs(model)
+        pending_jobs = get_pending_jobs(model)
+
     job_listings = get_all_jobs()
 
     return render_template(
         'jobs.html',
         agency_jobs=agency_jobs,
-        model_job_invites=model_job_invites,
-        closed_jobs=closed_jobs,
+        pending_jobs=pending_jobs,
+        active_jobs=active_jobs,
         job_listings=job_listings,
         is_agent=is_agent,
-        is_model=is_model
+        model_jobs=model_jobs
     )
-
 @app.route('/agency')
 # @login_required
 def agency(): 

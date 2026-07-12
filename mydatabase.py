@@ -130,18 +130,18 @@ def get_model_agencies(model_id):
         print(f"Error fetching agencies: {e}")
         return []
 
-def get_model_jobs(model_id):
+def get_model_jobs(assigned_model_id):
     try:
-        cur.execute('SELECT * FROM jobs WHERE model_id = %s', (model_id,))
+        cur.execute('SELECT * FROM jobs WHERE assigned_model_id = %s', (assigned_model_id,))
         return cur.fetchall()
     except Exception as e:
         conn.rollback()
         print(f"Error fetching jobs: {e}")
         return []
 
-def get_pending_jobs(model_id):
+def get_pending_jobs(assigned_model_id):
     try:
-        cur.execute('SELECT * FROM jobs WHERE model_id = %s AND status = %s', (model_id, 'pending'))
+        cur.execute('SELECT * FROM jobs WHERE assigned_model_id = %s AND status = %s', (assigned_model_id, 'pending'))
         return cur.fetchall()
     except Exception as e:
         conn.rollback()
@@ -278,9 +278,9 @@ def update_job_status_on_acceptance(job_id: int, model_response: str):
         print(f'Error updating status: {e}')
         return []        
 
-def get_closed_jobs(model_id):
+def get_active_jobs(agency_id):
     try:
-        cur.execute('SELECT * FROM jobs WHERE model_id = %s AND status = %s', (model_id, 'accepted'))
+        cur.execute('SELECT * FROM jobs WHERE agency_id = %s AND status = %s', (agency_id, 'active'))
         return cur.fetchall()
     except Exception as e:
         print(f"Error fetching closed jobs: {e}")
