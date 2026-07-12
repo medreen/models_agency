@@ -1,32 +1,109 @@
-{% extends 'base.html' %}
-
-{% block title %}Home{% endblock %}
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content
+%}
 <div class="home-page">
-    <section class="hero">
+  <section class="hero px-8 py-20 text-center">
+    <span class="text-5xl font-extrabold tracking-tight mb-6 mx-auto">
+      Your <span class="logo-mark">model</span> to
+      <span class="logo-mark">agency</span> SAAS
+    </span>
+    <p class="text-sm font-light logo-tag opacity-70 max-w-md mx-auto mb-8">
+      Connecting models and agencies across East Africa — profiles, bookings,
+      and payments in one place.
+    </p>
+    <button class="cta px-8 py-3">Are you an agency?</button>
+  </section>
 
-    </section>
+  <section class="steps mb-10">
+    <h2 class="text-3xl mt-5 font-bold" style="display:flexbox; align-items:center; justify-content:space-evenly;">Follow this step by step <span class="logo-mark"> Guide</span></h2>
+    <div class="flex align-center gap-4">
+        <div class="single-container mt-6 mb-8 steps_div">
+            <h4 class="logo-tag"># | Step 1</h4>
+            <p class="text-sm">Create an account based on your interests</p>
+        </div>
+        <div class="single-container mt-6 mb-8 steps_div">
+            <h4 class="logo-tag"># | Step 2</h4>
+            <p class="text-sm">Login to your account</p><br>
 
-    <section class="about">
+        </div>
+        <div class="single-container mt-6 mb-8 steps_div">
+            <h4 class="logo-tag"># | Step 3</h4>
+            <p class="text-sm">View jobs section to see posted jobs or apply for jobs</p>
+        </div>
+        <div class="single-container mt-6 mb-8 steps_div">
+            <h4 class="logo-tag"># | Step 4</h4>
+            <p class="text-sm">On completion, track and confirm payment</p>
+        </div>
+    </div>
+  </section>
 
-    </section>
+  <section class="about px-8 py-16">
+    <div class="mx-auto grid grid-cols-1 md:grid-cols-2">
+      <div
+        class="p-8 flex flex-col"
+        style="
+          background-color: #f5f5f5;
+          min-height: 65vh;
+          align-items: flex-end;
+          justify-content: center;
+        "
+      >
+        <span class="text-sm logo-tag uppercase tracking-wide mb-2 opacity-70"
+          >For Models</span
+        >
+        <h3 class="text-3xl font-bold mb-3">
+          Get <span class="logo-mark">discovered</span>
+        </h3>
 
-    <section class="steps">
+        <p class="text-sm">
+          <span class="text-sm logo-mark">Model </span>
+          <span class="logo-tag">Connect</span> makes it easier to choose who
+          and how to represent.
+        </p>
+        <p class="text-sm">
+          Build a profile with your measurements and portfolio, <br />
+          then get invited to jobs that match your vibe and rates.
+        </p>
+      </div>
+      <div class="empty"></div>
+    </div>
 
-    </section>
+    <div class="mx-auto grid grid-cols-1 md:grid-cols-2 mb-6">
+      <div class="empty"></div>
+      <div
+        class="p-8 flex flex-col justify-center"
+        style="background-color: #f5f5f5; min-height: 65vh"
+      >
+        <span
+          class="text-sm logo-tag text-white uppercase tracking-wide mb-2 opacity-70"
+          >For Agencies</span
+        >
+        <h3 class="text-3xl font-bold mb-3">
+          Have <span class="logo-mark">control</span>
+        </h3>
 
-    <section class="models">
+        <p class="text-sm">
+          <span class="text-sm logo-mark">Model </span>
+          <span class="logo-tag">Connect</span> makes it easier to choose who
+          and how to represent.
+        </p>
+        <p class="text-sm">
+          Send invites to models of your choice, <br />
+          then get acceptance work with them and track your commissions, wallet
+          and payment all at once.
+        </p>
+      </div>
+    </div>
+  </section>
 
-    </section>
-
-    <section class="agency">
-
-    </section>
-
-    <section class="end">
-
-    </section>
+  
+  
+<section class="end px-8 py-16 text-center">
+  <div class="mb-6">
+    <p class="text-3xl font-semibold opacity-80 mx-auto">
+      "Choose <span class="logo-mark">who</span> to represent and <span class="logo-mark">how</span> to represent"
+    </p>
+  </div>
+</section>
 </div>
 
 {% endblock %}
