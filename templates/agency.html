@@ -1,0 +1,81 @@
+{% extends 'base.html' %} {% block title %} Browse Agencies{% endblock %} {% block
+content %}
+<div class="p-2 mb-8 mt-3">
+  <section class="mt-3 mb-8 grid grid-cols-1 gap-6">
+    {% for agency in agencies %}
+    <div class="rounded-lg agencies-page p-6 shadow-sm grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 items-center justify-center gap-0 mb-4">
+        <span class="text-2xl font-bold" style="color: #827d71">{{ agency.name }}</span>
+        <div>
+          <span class="block text-xs logo-tag">Type</span>
+          <span class="text-sm logo-mark text-grey font-light opacity-70 capitalize">{{ agency.agency_type | capitalize }}</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-y-3 gap-x-3">
+        <div>
+          <span class="block text-xs logo-tag">City</span>
+          <span class="text-sm font-medium">{{ agency.city }}</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Country</span>
+          <span class="text-sm font-medium">{{ agency.country }}</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Founded</span>
+          <span class="text-sm font-medium">{{ agency.founded_year }}</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Models</span>
+          <span class="text-sm font-medium">{{ agency.total_models }}</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Commission</span>
+          <span class="text-sm font-medium">{{ agency.commission_pct }}%</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Phone</span>
+          <span class="text-sm font-medium">{{ agency.phone }}</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Website</span>
+          <span class="text-sm font-medium">
+            {% if agency.website %}
+            <a href="{{ agency.website }}" target="_blank" rel="noopener noreferrer" class="underline">Visit</a>
+            {% else %}—{% endif %}
+          </span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Instagram</span>
+          <span class="text-sm font-medium">
+            {% if agency.instagram_url %}
+            <a href="{{ agency.instagram_url }}" target="_blank" rel="noopener noreferrer" class="underline">View</a>
+            {% else %}—{% endif %}
+          </span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-2">
+    <div class="mt-4 pt-4 border-t border-white/20 flex items-center gap-3 justify-center">
+  <div
+    class="h-10 w-10 rounded-full flex items-center justify-center text-sm font-bold text-white"
+    style="background-color: #8a8375;"
+  >
+    {% set words = agency.name.split() %}
+    {{ words[0][0] | upper }}{% if words|length > 1 %}{{ words[-1][0] | upper }}{% endif %}
+  </div>
+</div>
+        <div class="mt-16 mb-0">
+          
+            <a href="mailto:{{ agency.email }}?subject=Inquiry&body=Hi, I'd like to connect regarding your agency."
+            class="cta-dark w-full text-center inline-block"
+          >
+            Contact
+          </a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+</div>
+{% endblock %}

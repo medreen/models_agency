@@ -138,7 +138,7 @@ def login():
 @app.route('/models')
 # @login_required
 def models_dashboard():
-    models = get_all_models
+    models = get_all_models()
     return render_template('models.html', models = models)
 
 
@@ -239,9 +239,8 @@ def jobs():
 @app.route('/agency')
 # @login_required
 def agency(): 
-    agencies = get_all_agencies
-    collaborations = get_all_collaborations
-    return render_template('agency.html', agencies=agencies, collaborations=collaborations)
+    agencies = get_all_agencies()    
+    return render_template('agency.html', agencies=agencies)
 
 @app.route('/dashboard')
 # @login_required

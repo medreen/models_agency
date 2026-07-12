@@ -1,70 +1,107 @@
-{% extends 'base.html' %} 
-{% block title% } Browse Models{% endblock %}
+{% extends 'base.html' %} {% block title %} Browse Models{% endblock %} {% block
+content %}
+<div class="p-8 mb-8 mt-3">
+  <section class="mt-3 mb-8 grid grid-cols-1 gap-4">
+    {% for model in models %}
+    <div class="rounded-lg models-page p-6 shadow-sm grid grid-cols-3 gap-4">
+      <div class="grid grid-cols-1 items-center justify-center gap-0 mb-4">
+        <span class="text-2xl font-bold" style="color: #8a8375"
+          >{{ model.first_name }} {{ model.last_name }}</span
+        >
+        <div>
+          <span class="block text-xs logo-tag">Category</span>
+          <span
+            class="text-sm logo-mark text-grey font-light opacity-70 capitalize"
+            >{{ model.category }}</span
+          >
+        </div>
+      </div>
 
-{% block content %}
+      <div class="grid grid-cols-3 gap-y-3 gap-x-3">
+        <div>
+          <span class="block text-xs logo-tag">Height</span>
+          <span class="text-sm font-medium">{{ model.height_cm }} cm</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Weight</span>
+          <span class="text-sm font-medium">{{ model.weight_kg }} kg</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Bust</span>
+          <span class="text-sm font-medium">{{ model.bust_cm }} cm</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Waist</span>
+          <span class="text-sm font-medium">{{ model.waist_cm }} cm</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Hips</span>
+          <span class="text-sm font-medium">{{ model.hips_cm }} cm</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Shoe Size</span>
+          <span class="text-sm font-medium">{{ model.shoe_size }}</span>
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Eye</span>
+          <span class="text-sm font-medium capitalize"
+            >{{ model.eye_color }}</span
+          >
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Hair</span>
+          <span class="text-sm font-medium capitalize"
+            >{{ model.hair_color }}</span
+          >
+        </div>
+        <div>
+          <span class="block text-xs logo-tag">Experience</span>
+          <span class="text-sm font-medium"
+            >{{ model.experience_yrs }} yrs</span
+          >
+        </div>
+        <div>
+          <div class="grid grid-cols-2 gap-16 justify between">
+            <span class="text-xs logo-tag">Rate</span>
+            <span class="text-xs logo-tag">Status</span>
+          </div>
+          <div class="grid grid-cols-2 gap-16 justify between">
+            <span class="text-sm font-medium"
+              >KES {{model.rate_per_hour | round}}</span
+            >
 
-<section>
-{% for model in models %}
-<div class="rounded-lg p-6 shadow-sm" style="background-color: #8a8375;">
-  <div class="flex items-center justify-between mb-4">
-    <h3 class="text-2xl font-bold text-white">{{ model.first_name }} {{ model.last_name }}</h3>
-    <span class="text-sm font-light text-white capitalize">{{ model.category }}</span>
-  </div>
+            <span class="text-sm font-medium"
+              >{% if model.is_available %}Available{% else %}Not available{%
+              endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-2">
+        <div
+          class="mt-4 pt-4 border-t border-white/20 flex items-center gap-3 justify-center"
+        >
+          {% if model.portfolio_url %}
+          <a
+            href="{{ model.portfolio_url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-sm underline"
+          >
+            View Portfolio
+          </a>
+          {% endif %}
+        </div>
+        <div class="mt-16 mb-0">
+          <button type="submit" class="cta-dark w-full"><a href="mailto:{{ model.email }}?subject=Job Opportunity&body=Hi {{ model.first_name }}, we'd love to work with you on an upcoming project.">
+  Contact
+</a></button>
+        </div>
+      </div>
+    </div>
 
-  <div class="grid grid-cols-2 gap-y-3 gap-x-6 text-white">
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Height</span>
-      <span class="text-sm font-medium">{{ model.height_cm }} cm</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Weight</span>
-      <span class="text-sm font-medium">{{ model.weight_kg }} kg</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Bust</span>
-      <span class="text-sm font-medium">{{ model.bust_cm }} cm</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Waist</span>
-      <span class="text-sm font-medium">{{ model.waist_cm }} cm</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Hips</span>
-      <span class="text-sm font-medium">{{ model.hips_cm }} cm</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Shoe Size</span>
-      <span class="text-sm font-medium">{{ model.shoe_size }}</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Eye Color</span>
-      <span class="text-sm font-medium capitalize">{{ model.eye_color }}</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Hair Color</span>
-      <span class="text-sm font-medium capitalize">{{ model.hair_color }}</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Experience</span>
-      <span class="text-sm font-medium">{{ model.experience_yrs }} yrs</span>
-    </div>
-    <div>
-      <span class="block text-xs uppercase tracking-wide opacity-70">Rate</span>
-      <span class="text-sm font-medium">{{ model.rate_per_hour }}/hr</span>
-    </div>
-  </div>
-
-  <div class="mt-4 pt-4 border-t border-white/20 flex items-center justify-between">
-    <span class="text-sm text-white">
-      {% if model.is_available %}Available{% else %}Not available{% endif %}
-    </span>
-    {% if model.portfolio_url %}
-    <a href="{{ model.portfolio_url }}" target="_blank" rel="noopener noreferrer" class="text-sm text-white underline">
-      View Portfolio
-    </a>
-    {% endif %}
-  </div>
+    {% endfor %}
+  </section>
 </div>
-{% endif %}
-</section>
+
 {% endblock%}
