@@ -3,21 +3,159 @@ Data & info
 {% endblock %}
 {% block content %}
 
-<div>
-    <h2>This is the dashboard page</h2>
+<style>
+  /* Override body's flex centering for this page only —
+     body uses align-items:center + justify-content:center,
+     which centers <main> (the direct flex child) as a
+     shrink-wrapped box. This page needs main to fill the
+     width and sit at the top instead. */
+  main {
+    width: 100%;
+    margin-left: 20px;
+    align-self: flex-start;
+  }
+</style>
 
+<div class="page-content">
+
+{% if agency %}
+<section class="top-dta">
+    <div class="grid grid-cols-3 gap-3">
+        <div class="stat-card p-4 border pt-5 overflow-hidden">
+            <div class="flex justify-center">
+                <p class="text-xl font-light tracking-wide text-body">Jobs <span class="logo-mark">invites</span></p>
+            </div>
+
+            <div class="flex gap-6 text-center justify-center">
+                <div>
+                    <p class="mt-3 font-bold logo-tag">Pending</p>
+                    <p class="font-mono text-3xl logo-mark">
+                        {{ agency_jobs | selectattr('status', 'equalto', 'pending') | list | length }}
+                    </p>
+                </div>
+                <div>
+                    <p class="mt-3 font-bold logo-tag">Completed</p>
+                    <p class="font-mono text-3xl logo-mark">
+                        {{ agency_jobs | selectattr('status', 'in', ['completed', 'confirmed']) | list | length }}
+                    </p>
+                </div>
+                <div>
+                    <p class="mt-3 font-bold logo-tag">Declined</p>
+                    <p class="font-mono text-3xl logo-mark">
+                        {{ agency_jobs | selectattr('status', 'equalto', 'cancelled') | list | length }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card p-4 border pt-5 overflow-hidden">
+            <div class="flex justify-center">
+                <p class="text-xl font-light tracking-wide text-body">Payment <span class="logo-mark">wallet</span></p>
+            </div>
+
+            <div class="flex gap-6 text-center justify-center">
+                <div>
+                    <p class="mt-3 font-bold logo-tag">Paid</p>
+                    <p class="font-mono text-3xl logo-mark">
+                        {{ agency_jobs | selectattr('is_paid', 'equalto', true) | list | length }}
+                    </p>
+                </div>
+                <div>
+                    <p class="mt-3 font-bold logo-tag">Awaiting</p>
+                    <p class="font-mono text-3xl logo-mark">
+                        {{ agency_jobs | selectattr('is_paid', 'equalto', false) | list | length }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card p-4 border pt-5 overflow-hidden">
+            <div class="flex justify-center">
+                <p class="text-xl font-light tracking-wide text-body">Models <span class="logo-mark">worked</span> with</p>
+            </div>
+
+            <div class="flex text-center gap-6 justify-center">
+                <div>
+                    <p class="mt-3 font-bold logo-tag">Total</p>
+                    <p class="font-mono text-3xl logo-mark">
+                        {{ agency_jobs | map(attribute='assigned_model_id') | unique | list | length }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% elif session.get('model_id') %}
+<section class="top-dta">
+    <div class="grid grid-cols-3 gap-3">
+        <div class="stat-card p-4 border pt-5 overflow-hidden">
+            <div class="flex justify-center">
+                <p class="text-xl font-light tracking-wide text-body">Jobs <span class="logo-mark">taken</span></p>
+            </div>
+
+            <div class="flex gap-6 justify-center">
+                <div class="text-center">
+                    <p class="mt-3 font-bold logo-tag">Pending</p>
+                    <p class="font-mono text-3xl logo-mark">{{ model_jobs | selectattr('status', 'equalto', 'pending') | list | length }}</p>
+                </div>
+                <div class="text-center">
+                    <p class="mt-3 font-bold logo-tag">Completed</p>
+                    <p class="font-mono text-3xl logo-mark">{{ model_jobs | selectattr('status', 'equalto', 'completed') | list | length }}</p>
+                </div>
+                <div class="text-center">
+                    <p class="mt-3 font-bold logo-tag">Declined</p>
+                    <p class="font-mono text-3xl logo-mark">{{ model_jobs | selectattr('status', 'equalto', 'cancelled') | list | length }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card p-4 border pt-5 overflow-hidden">
+            <div class="flex justify-center">
+                <p class="text-xl font-light tracking-wide text-body">Payment <span class="logo-mark">wallet</span></p>
+            </div>
+
+            <div class="flex gap-6 justify-center">
+                <div class="text-center">
+                    <p class="mt-3 font-bold logo-tag">Paid</p>
+                    <p class="font-mono text-3xl logo-mark">{{ model_jobs | selectattr('is_paid', 'equalto', true) | list | length }}</p>
+                </div>
+                <div class="text-center">
+                    <p class="mt-3 font-bold logo-tag">Awaiting</p>
+                    <p class="font-mono text-3xl logo-mark">{{ model_jobs | selectattr('is_paid', 'equalto', false) | list | length }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card p-4 border pt-5 overflow-hidden">
+            <div class="flex justify-center">
+                <p class="text-xl font-light tracking-wide text-body">Agencies <span class="logo-mark">worked</span> with</p>
+            </div>
+
+            <div class="flex gap-6 justify-center">
+                <div class="text-center">
+                    <p class="mt-3 font-bold logo-tag">Total</p>
+                    <p class="font-mono text-3xl logo-mark">{{ model_jobs | map(attribute='agency_id') | unique | list | length }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+
+<section>
+<div class="modal-sct gap-4 relative w-full block">
 <!-- Modal toggle -->
-<button data-modal-target="job-modal" data-modal-toggle="job-modal" class="cta-dark absolute top-5.5 right-2.5" type="button">
+ <button data-modal-target="job-modal" data-modal-toggle="job-modal" class="cta-dark absolute top-6 right-3" type="button">
   Add job
 </button>
-
 <!-- Main modal -->
-<div id="job-modal" tabindex="-1" aria-hidden="true" class="container-form shadow-sm mt-2">
-    <div class="relative w-full max-w-md max-h-full">
+<div id="job-modal" tabindex="-1" aria-hidden="true" class="container-form shadow-sm mt-8">
+    <div class="relative w-full  max-h-full">
         <!-- Modal content -->
 
             <!-- Modal header -->
-            <div class="absolute top-1.25 right-2.5">
+            <div class="absolute top-1.5 right-6">
                 <button type="button" data-modal-hide="job-modal">
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6"/></svg>
                     <span class="sr-only">Close modal</span>
@@ -26,7 +164,7 @@ Data & info
 
             <!-- Modal body -->
             <form action="/add_job" method="POST">
-                <div class="mb-6">
+                <div class="mb-6 mt-8">
                     <label for="title" class="block mb-2.5 text-sm font-medium text-heading">Job Title</label>
                     <input type="text" name="title" id="title" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="Vogue Magazine" required>
                 </div>
@@ -108,7 +246,7 @@ Data & info
                         </select>
                     </div>
                 </div>
-                </div>
+
                 <!-- Status / Is Paid -->
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -167,10 +305,11 @@ Data & info
                     <button type="submit" class="cta w-full">
                        send invite
                     </button>
-                    <button data-modal-hide="job-modal" type="submit" class="button-decline w-full">Cancel</button>
+                    <button data-modal-hide="job-modal" type="button" class="button-decline w-full">Cancel</button>
                 </div>
             </form>
         </div>
     </div>
+</section>
 </div>
 {% endblock %}

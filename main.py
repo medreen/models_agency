@@ -20,14 +20,7 @@ bcrypt = Bcrypt(app)
 
 @app.route('/')
 def home():
-    featured_models = get_all_models()[:4]   # or a dedicated "featured" query
-    featured_agencies = get_all_agencies()[:4]
-    stats = {
-        'total_models': len(get_all_models()),
-        'total_agencies': len(get_all_agencies()),
-        'total_jobs': len(get_all_jobs()),
-    }
-    return render_template('index.html', featured_models=featured_models, featured_agencies=featured_agencies, stats=stats)
+    return render_template('index.html')
 
 def login_required(f):
     @wraps(f)
@@ -64,7 +57,7 @@ def register_model():
         profile_photo_url = request.form['profile_photo_url']
         updated_at = datetime.now()
         created_at = datetime.now()
-       
+
         model = check_model_exists(email)
         if not model:
             hashed_password = generate_password_hash(password)
@@ -83,7 +76,7 @@ def register_model():
             flash('Account already exists.', 'warning')
     return render_template('registermodel.html')
 
-   
+
 @app.route('/register_agency', methods=['GET', 'POST'])
 def register_agency():
     if request.method == 'POST':
@@ -110,15 +103,18 @@ def register_agency():
             new_agency = (
                 name, email, phone, hashed_password, website,
                 address, city, country, agency_type, founded_year,
-                commission_pct,               
+                commission_pct,
                 logo_url, instagram_url, created_at, updated_at, total_models
             )
             insert_agency(new_agency)
-            return redirect(url_for('login'))
+            # Fixed: flash() moved before return — it never ran
+            # when it was placed after the redirect.
             flash('Account created successfully. Please log in.', 'success')
+            return redirect(url_for('login'))
         else:
             flash('Account already exists.', 'warning')
     return render_template('registerAgency.html')
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -130,16 +126,16 @@ def login():
         agency_exists = check_agency_exists(email)
         model_exists = check_model_exists(email)
         if model_exists and check_password_hash(model_exists.get('password'), password):
-            session['model_id'] = model_exists['id']  # adjust key name to match your actual column
+            session['models_id'] = model_exists[0]  # adjust key name to match your actual column
             flash('Login successful.', 'success')
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('fetch_statistics'))
         elif agency_exists and check_password_hash(agency_exists.get('password'), password):
-            session['agency_id'] = agency_exists['id']  # adjust key name to match your actual column
-            flash('Login successful.', 'success')
+            session['agency_id'] = agency_exists[0]  # adjust key name to match your actual column
+            flash('Login successful.', 'success')            
             return redirect(url_for('jobs'))
-        else:
-            return redirect(url_for('index'))
+        else:           
             flash('Invalid email or password.', 'danger')
+            return redirect(url_for('home'))
     return render_template('login.html')  # Render the login form
 
 @app.route('/models')
@@ -192,15 +188,15 @@ def add_job():
 
 @jobs_bp.route("/jobs/<int:job_id>/respond", methods=["POST"])
 def respond_to_job(job_id):
-    model_id = session.get("model_id")  # however you're tracking the logged-in model
-    if not model_id:
+    models_id = session.get("models_id")  # however you're tracking the logged-in model
+    if not models_id:
         flash("Log in as model to respond to job requests.")
         return redirect(url_for("login"))
 
     response = request.form.get("response")  # "accepted" or "declined"
     if response not in ("accepted", "declined"):
         flash("Invalid response.")
-        return redirect(url_for("models_dashboard"))
+        return redirect(url_for("jobs"))
 
     try:
         update_job_status_on_acceptance(
@@ -211,7 +207,7 @@ def respond_to_job(job_id):
         flash(f"Job {response} successfully.")
     except ValueError as e:
         flash(str(e))
-    return redirect(url_for("models_dashboard"))
+    return redirect(url_for("jobs"))
 
 @app.route('/jobs')
 # @login_required
@@ -228,7 +224,7 @@ def jobs():
         agency_jobs = get_agency_jobs(is_agent)
         active_jobs = get_active_jobs(is_agent)
     else:
-        model = session.get('model_id')
+        model = session.get('models_id')
         model_jobs = get_model_jobs(model)
         pending_jobs = get_pending_jobs(model)        
 
@@ -250,14 +246,24 @@ def agency():
     return render_template('agency.html', agencies=agencies)
 
 @app.route('/dashboard')
-# @login_required
+# login_required
 def fetch_statistics():
-    jobs_listings = get_all_jobs()  # Fetch all jobs from the database
-    collaborations_listings = get_all_collaborations()  # Fetch all collaborations from the database
-    collaboration_models = get_all_collaboration_models()  # Fetch all collaboration models from the database
-    agency_listings = get_all_agencies()  # Fetch all agencies from the database
-    models = get_all_models()  # Fetch all models from the database
-    return render_template('dashboard.html', collaborations_listings=collaborations_listings, collaboration_models=collaboration_models, agency_listings=agency_listings, models=models, jobs_listings=jobs_listings)
+    agency = None
+    model_jobs = []
+    agency_jobs = []
+
+    if session.get('agency_id'):
+        agency = session.get('agency_id')
+        agency_jobs = get_agency_jobs(agency)
+    elif session.get('models_id'):
+        model = session.get('models_id')
+        model_jobs = get_model_jobs(model)
+    else:
+        return redirect(url_for('login'))
+
+    return render_template('dashboard.html', model_jobs=model_jobs, agency=agency, agency_jobs=agency_jobs)
+
+
 
 @app.route('/fetch_collaborations')
 # @login_required

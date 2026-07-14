@@ -267,6 +267,14 @@ body {
   background-color: #fff;
 }
 
+.stat-card{
+  max-height: 400px;
+  height: 100%;
+  background-color: var(--ink);
+  color: var(--paper);
+  border-radius: 8px;
+}
+
 .footer {
   position: fixed;
   bottom: 0;

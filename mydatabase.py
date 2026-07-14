@@ -123,7 +123,7 @@ def get_all_models():
 
 def get_model_agencies(model_id):
     try:
-        cur.execute('SELECT * FROM agency WHERE model_id = %s', (model_id,))
+        cur.execute('SELECT * FROM agency WHERE model_id = %s', (assigned_model_id,))
         return cur.fetchall()
     except Exception as e:
         conn.rollback()
@@ -211,9 +211,9 @@ def get_all_collaboration_models():
         print(f"Error fetching collaboration models: {e}")
         return []
 
-def get_model_by_email(model_id, email):
+def get_model_by_email(email):
     try:
-        cur.execute('SELECT * FROM models WHERE email = %s AND model_id = %s', (email, model_id))
+        cur.execute('SELECT * FROM models WHERE email = %s', (email,))
         return cur.fetchone()
     except Exception as e:
         conn.rollback()
