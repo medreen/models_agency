@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Model Management | {% block title %} {% endblock %}</title>
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.2.0/css/fontawesome.min.css" integrity="sha512-hCwq0YsxXGqCBMpCCIDsaTCpulOwmZLydeEtRm5outnKd+4+JlQvkYxFZbmO1NsdGAchDZVGQVvvGSsW1tOoMw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,6 +44,7 @@
         <li><a href="/models">Models</a></li>
         <li><a href="/agency">Agencies</a></li>
         <li><a href="/jobs">Jobs</a></li>
+        <li><a href="#prices">Pricing</a></li>
         <li><a href="/register_agency">Are you an Agency?</a></li>
               
       </ul>
@@ -65,7 +66,8 @@
 
     <main>{% block content %}{% endblock %}</main>
 
-
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.2.0/css/all.min.css"></script>
     <script
       src="https://kit.fontawesome.com/your-font-awesome-kit.js"
       crossorigin="anonymous"

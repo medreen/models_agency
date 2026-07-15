@@ -13,6 +13,18 @@
   --muted: #8a8375;
 }
 
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding-top: 72px; /* matches navbar height */
+  box-sizing: border-box;
+  background-color: #fff;
+  overflow-x: hidden;
+}
+
 .nav {
   position: fixed;
   top: 0;
@@ -166,6 +178,11 @@ h2 {
   color: var(--ink)
 }
 
+.page-content {
+  margin-top: 20px;
+
+}
+
 .hero {
   width: 100vw;
   min-height: 80vh;
@@ -178,18 +195,14 @@ h2 {
 }
 
 .about {
-padding: 0;
+  padding: 0;
   margin: 0;
   width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  margin-left: calc(-50vw + 50%);
   background-color: var(--muted);
 }
 
-.agencies-page {
+.agencies {
   background-color: var(--ink);
   color: var(--paper)
 }
@@ -255,16 +268,6 @@ input::-moz-placeholder {
   color: #999;
   font-style: italic;
   opacity: 1;
-}
-body {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0;
-  padding-top: 72px; /* matches navbar height */
-  box-sizing: border-box;
-  background-color: #fff;
 }
 
 .stat-card{
@@ -513,6 +516,240 @@ h3 {
 .btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Jobs table — standalone styling, independent of Tailwind utilities.
+   ========================================================================== */
+
+.jobs-table-wrap {  
+  margin-top: 1.5rem;
+  overflow-x: auto;
+  border: 1px solid #e2e2e2;
+  border-radius: 8px;
+  max-width: 1000px;  
+  align-items: center;
+  justify-content: center;
+}
+
+.jobs-table {  
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  text-align: center;
+  color: #1a1a1a;
+}
+
+.jobs-table thead {
+  background-color: #f5f5f5;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6b6b6b;
+}
+
+.jobs-table th,
+.jobs-table td {
+  padding: 0.75rem 1rem;
+}
+
+.jobs-table tbody tr {
+  border-top: 1px solid #e2e2e2;
+}
+
+.jobs-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+.jobs-table .status {
+  text-transform: capitalize;
+}
+
+.jobs-table .empty-row td {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  color: #6b6b6b;
+}
+
+/* ==========================================================================
+   Modal — standalone replacement for Flowbite's modal CSS.
+   Toggles visibility purely off the aria-hidden attribute, so it works
+   whether or not Flowbite's own JS/CSS bundle loads successfully.
+   ========================================================================== */
+
+#job-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Hidden state: aria-hidden="true" */
+#job-modal[aria-hidden="true"] {
+  display: none;
+}
+
+/* Visible state: aria-hidden="false" */
+#job-modal[aria-hidden="false"] {
+  display: flex;
+}
+
+/* Backdrop */
+#job-modal::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+}
+
+/* Modal content box */
+#job-modal .relative {
+  background-color: #f5f5f5;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  max-height: 90vh;
+  overflow-y: auto;
+  width: 100%;
+}
+
+/* ==========================================================================
+   Pricing card — standalone styling, independent of Tailwind utilities.
+   Scoped narrowly (.pricing, .plan-name, .features) so it doesn't
+   interfere with .container-form's existing rules used elsewhere
+   (e.g. the job modal).
+   ========================================================================== */
+
+/* ==========================================================================
+   Pricing card — standalone styling, independent of Tailwind utilities.
+   ========================================================================== */
+
+.pricing {
+  background-color: var(--paper);
+  border: 1px solid #e2e2e2;
+  border-radius: 16px;
+  padding: 1.75rem;
+  padding-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  max-width: 400px;
+  overflow: hidden;  
+}
+
+.price-select {
+  margin-bottom: 24px;
+}
+
+.pricing .plan-name {
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.pricing .price { 
+  margin-bottom: 1rem;
+}
+
+.pricing .features {
+  flex-grow: 1;
+  background-color: #fff;
+  border-radius: 16px 16px;
+  margin: 0 -1.75rem 0;
+  padding: 1.25rem 1.75rem 1.25rem;
+}
+ 
+
+.pricing .features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.pricing .features li {
+  padding: 0.4rem 0;
+  font-size: 0.9rem;
+   color: #0a0a0a;
+
+}
+
+.pricing .features li::before {
+  content: "• ";
+   color: #0a0a0a;
+  font-weight: 700;
+}
+  .unavailable {  
+  text-decoration: line-through;
+  color: #9ca3af;
+  font-size: 1rem;
+  font-weight: 400;
+  margin-right: 0.5rem;
+
+ }
+
+ .price-select ol {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+}
+ 
+.price-select li {
+  border-bottom: 1px solid #e2e2e2;  
+  /* padding: 0.5rem 1.25rem; */
+  padding: 0.65rem 1.4rem;
+}
+ 
+.price-select a {
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  
+}
+ 
+#agency_price,
+#model_price {
+  /* display: grid;
+  grid-template-columns: repeat(2, 1fr); */
+  gap: 1.5rem;
+}
+ 
+/* @media (max-width: 768px) {
+  #agency_price,
+  #model_price {
+    grid-template-columns: 2fr;
+  }
+} */
+ 
+.pricing .features li.unavailable {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+#agency_price,
+#model_price {
+  display: none;
+}
+ 
+#agency_price.active-panel,
+#model_price.active-panel {
+  display: grid;
+}
+ 
+
+.price-select li.active-tab {
+  background-color: #1a1a1a;
+  border-color: #1a1a1a;
+  border-radius:  0 8px;
+}
+ 
+.price-select li.active-tab a {
+  color: #fff;
 }
 
 /* @media (max-width: 860px) {

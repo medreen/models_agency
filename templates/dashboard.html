@@ -18,7 +18,7 @@ Data & info
 
 <div class="page-content">
 
-{% if agency %}
+{% if session.get('agency_id') %}
 <section class="top-dta">
     <div class="grid grid-cols-3 gap-3">
         <div class="stat-card p-4 border pt-5 overflow-hidden">
@@ -85,7 +85,44 @@ Data & info
         </div>
     </div>
 </section>
-{% elif session.get('model_id') %}
+
+<section class="mt-6">
+    <div class="jobs-table-wrap">
+        <table class="jobs-table">
+            <thead>
+                <tr>
+                    <th scope="col">Job Title</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Paid</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Total Hours</th>
+                    <th scope="col">Total Pay</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in agency_jobs %}
+                <tr>
+                    <td>{{ job.title }}</td>
+                    <td>{{ job.job_type }}</td>
+                    <td class="status">{{ job.status }}</td>
+                    <td>{{ "Yes" if job.is_paid else "No" }}</td>
+                    <td>{{ job.start_date }}</td>
+                    <td> {{ job.currency }} {{ job.rate_per_hour }} /hr</td>
+                     <td>{{ job.total_hours }}</td>
+                      <td> {{job.currency}}  {{ job.total_pay }}</td>
+                </tr>
+                {% else %}
+                <tr class="empty-row">
+                    <td colspan="6">No jobs yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% elif session.get('models_id') %}
 <section class="top-dta">
     <div class="grid grid-cols-3 gap-3">
         <div class="stat-card p-4 border pt-5 overflow-hidden">
@@ -140,8 +177,44 @@ Data & info
         </div>
     </div>
 </section>
-{% endif %}
 
+<section class="mt-8">
+    <div class="jobs-table-wrap">
+        <table class="jobs-table">
+            <thead>
+                <tr>
+                    <th scope="col">Job Title</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Paid</th>
+                    <th scope="col">Start Date</th>
+                    <th scope="col">Rate</th>
+                    <th scope="col">Total Hours</th>
+                    <th scope="col">Total Pay</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for job in model_jobs %}
+                <tr>
+                    <td>{{ job.title }}</td>
+                    <td>{{ job.job_type }}</td>
+                    <td class="status">{{ job.status }}</td>
+                    <td>{{ "Yes" if job.is_paid else "No" }}</td>
+                    <td>{{ job.start_date }}</td>
+                    <td> {{ job.currency }} {{ job.rate_per_hour }} </td>
+                    <td>{{ job.total_hours }}</td>
+                    <td> {{job.currency}} {{ job.total_pay }}</td>
+                </tr>
+                {% else %}
+                <tr class="empty-row">
+                    <td colspan="6">No jobs yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
 
 <section>
 <div class="modal-sct gap-4 relative w-full block">
@@ -151,9 +224,9 @@ Data & info
 </button>
 <!-- Main modal -->
 <div id="job-modal" tabindex="-1" aria-hidden="true" class="container-form shadow-sm mt-8">
-    <div class="relative w-full  max-h-full">
+    <div class="relative w-full max-w-md max-h-full">
         <!-- Modal content -->
-
+ 
             <!-- Modal header -->
             <div class="absolute top-1.5 right-6">
                 <button type="button" data-modal-hide="job-modal">
@@ -161,14 +234,14 @@ Data & info
                     <span class="sr-only">Close modal</span>
                 </button>
             </div>
-
+ 
             <!-- Modal body -->
             <form action="/add_job" method="POST">
                 <div class="mb-6 mt-8">
                     <label for="title" class="block mb-2.5 text-sm font-medium text-heading">Job Title</label>
                     <input type="text" name="title" id="title" class="bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="Vogue Magazine" required>
                 </div>
-
+ 
                 <!-- Model / Job Type -->
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -185,7 +258,7 @@ Data & info
                         <input type="text" id="job_type" name="job_type" class="bg-neutral-secondary-medium border border-default-medium text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="" required>
                     </div>
                 </div>
-
+ 
                 <!-- Location / City / Country -->
                 <div class="grid gap-6 mb-6 md:grid-cols-3">
                     <div>
@@ -201,7 +274,7 @@ Data & info
                         <input type="text" id="country" name="country" class="bg-neutral-secondary-medium border border-default-medium text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="Kenya">
                     </div>
                 </div>
-
+ 
                 <!-- Start Date / End Date -->
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -213,7 +286,7 @@ Data & info
                         <input type="date" id="end_date" name="end_date" class="bg-neutral-secondary-medium border border-default-medium text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs">
                     </div>
                 </div>
-
+ 
                 <!-- Start Time / End Time -->
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -225,7 +298,7 @@ Data & info
                         <input type="time" id="end_time" name="end_time" class="bg-neutral-secondary-medium border border-default-medium text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs">
                     </div>
                 </div>
-
+ 
                 <!-- Rate per Hour / Currency -->
                 <div class="grid gap-6 mb-6 md:grid-cols-3">
                     <div>
@@ -246,7 +319,7 @@ Data & info
                         </select>
                     </div>
                 </div>
-
+ 
                 <!-- Status / Is Paid -->
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -266,7 +339,7 @@ Data & info
                         </select>
                     </div>
                 </div>
-
+ 
                 <!-- Gender Required / Category Required -->
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -282,7 +355,7 @@ Data & info
                         <input type="text" id="category_required" name="category_required" class="bg-neutral-secondary-medium border border-default-medium text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="Runway, Editorial, Commercial...">
                     </div>
                 </div>
-
+ 
                 <!-- Min Height / Max Height -->
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div>
@@ -294,13 +367,13 @@ Data & info
                         <input type="number" min="0" id="max_height_cm" name="max_height_cm" class="bg-neutral-secondary-medium border border-default-medium text-sm text-heading rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs" placeholder="e.g. 185">
                     </div>
                 </div>
-
+ 
                 <!-- Description -->
                 <div class="mb-6">
                     <label for="description" class="block mb-2.5 text-sm font-medium text-heading">Job Description</label>
                     <textarea id="description" name="description" rows="4" class="block bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand w-full p-3.5 shadow-xs placeholder:text-body" placeholder="Write product description here"></textarea>
                 </div>
-
+ 
                 <div class="flex items-start mt-6 mb-3">
                     <button type="submit" class="cta w-full">
                        send invite

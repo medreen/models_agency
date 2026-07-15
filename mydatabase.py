@@ -31,9 +31,10 @@ def insert_model(values):
                 %s, %s, %s, %s, %s,
                 %s, %s, %s, %s, %s,
                 %s, %s, %s, %s, %s
-            )
+            ) RETURNING id
         ''', values)
         conn.commit()
+        return cur.fetchone()['id']
         print("Model inserted successfully")
     except Exception as e:
         conn.rollback()
@@ -50,9 +51,10 @@ def insert_agency(values):
                 %s, %s, %s,
                 %s, %s, %s, %s, %s, %s, %s, %s, %s
 
-            )
+            ) RETURNING id
         ''', values)
         conn.commit()
+        return cur.fetchone()['id']
         print("Agency inserted successfully")
     except Exception as e:
         conn.rollback()
