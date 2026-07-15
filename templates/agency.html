@@ -1,9 +1,9 @@
 {% extends 'base.html' %} {% block title %} Browse Agencies{% endblock %} {% block
 content %}
-<div class="p-2 mb-8 mt-3">
+<div class=" mb-8 mt-3">
   <section class="mt-3 mb-8 grid grid-cols-1 gap-6">
     {% for agency in agencies %}
-    <div class="rounded-lg agencies-page p-6 shadow-sm grid grid-cols-3 gap-4">
+    <div class="rounded-l agencies-page p-6 shadow-sm grid grid-cols-3 gap-4">
       <div class="grid grid-cols-1 items-center justify-center gap-0 mb-4">
         <span class="text-2xl font-bold" style="color: #827d71">{{ agency.name }}</span>
         <div>

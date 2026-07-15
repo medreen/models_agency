@@ -32,38 +32,60 @@
     
 <header>
   <nav class="nav">
-  <div class="nav-inner">
-    <a href="/" class="logo">
-      <span class="logo-mark">Model</span>
-      <span class="logo-tag">Connect</span>
-    </a>
- 
-    <div class="desktop-only">
-      <ul class="nav-links">
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><a href="/models">Models</a></li>
-        <li><a href="/agency">Agencies</a></li>
-        <li><a href="/jobs">Jobs</a></li>
-        <li><a href="#prices">Pricing</a></li>
-        <li><a href="/register_agency">Are you an Agency?</a></li>
-              
-      </ul>
-      
-      <a href="/register_model" class="cta">Create Model Account</a>
-      <a href="/login" class="cta">Login</a>
-    </div>
- 
-    <button class="toggle" id="toggle" aria-label="Open menu" aria-controls="mobile-panel" aria-expanded="false">
-      <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-      </svg>
-      <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="display:none;">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  </div>
-</header>   
+    <div class="nav-inner">
+      <a href="/" class="logo">
+        <span class="logo-mark">Model</span>
+        <span class="logo-tag">Connect</span>
+      </a>
 
+      <div class="desktop-only">
+        <ul class="nav-links">
+          {% if session.get('agency_id') or session.get('models_id') %}
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/models">Models</a></li>
+          <li><a href="/agency">Agencies</a></li>
+          <li><a href="/jobs">Jobs</a></li>          
+          {% else %}
+                    
+          {% endif %}
+        </ul>
+        
+        <div class="auth_buttons">
+        {% if session.get('agency_id') or session.get('models_id') %}
+        
+        <a href="/logout" class="cta">Logout</a>
+        {% else %}
+        <a href="/register_model?subscribe=free" class="cta w-full">Join as model</a>
+        <a href="/login" class="cta">Login</a>
+        {% endif %}
+        <a href="/pricing" class="cta-dark text-center w-full">See Plans</a>
+        </div>
+      </div>
+
+      <button class="toggle" id="toggle" aria-label="Open menu" aria-controls="mobile-panel" aria-expanded="false">
+        <svg id="icon-open" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+        </svg>
+        <svg id="icon-close" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="display:none;">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+</header>  
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-container">
+    {% for category, message in messages %}
+    <div class="flash flash-{{ category }}">
+      {{ message }}
+      <button class="flash-close" aria-label="Dismiss">&times;</button>
+      <div class="flash-progress"></div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
     <main>{% block content %}{% endblock %}</main>
 
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
@@ -73,7 +95,7 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
-
+    <script src="{{ url_for('static', filename='js/pricing-tabs.js') }}"></script>
       
 <script>
   const toggle = document.getElementById('toggle');
@@ -87,6 +109,42 @@
     iconOpen.style.display = isOpen ? 'none' : 'block';
     iconClose.style.display = isOpen ? 'block' : 'none';
   });
+
+
+  // ==========================================================================
+// Flash message toasts — auto-dismiss + manual close.
+// Expects markup like:
+//   <div class="flash-container">
+//     <div class="flash flash-success">
+//       ...message...
+//       <button class="flash-close">&times;</button>
+//       <div class="flash-progress"></div>
+//     </div>
+//   </div>
+// ==========================================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  const AUTO_DISMISS_MS = 4000;
+
+  function removeFlash(flashEl) {
+    flashEl.classList.add('flash-out');
+    // wait for the flash-out animation (0.2s) before actually removing it,
+    // so the fade/slide plays instead of the element just vanishing
+    flashEl.addEventListener('animationend', () => flashEl.remove(), { once: true });
+  }
+
+  document.querySelectorAll('.flash').forEach((flashEl) => {
+    const timer = setTimeout(() => removeFlash(flashEl), AUTO_DISMISS_MS);
+
+    const closeBtn = flashEl.querySelector('.flash-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        clearTimeout(timer); // don't double-fire if closed manually before the timeout
+        removeFlash(flashEl);
+      });
+    }
+  });
+});
 </script>
  <footer class="footer md:p-6">
     <span class="text-sm text-body sm:text-center">© 2026 <a href="https://flowbite.com/" class="hover:underline">Flowbite™</a>. All Rights Reserved.

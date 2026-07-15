@@ -278,6 +278,47 @@ def fetch_statistics():
     models = get_all_models()
     return render_template('dashboard.html', model_jobs=model_jobs, models=models,  agency_jobs=agency_jobs)
 
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
+@app.route('/change_password', methods=['GET', 'POST'])
+def change_password():
+    if not session.get('agency_id') and not session.get('models_id'):
+        flash('Please log in to change your password.', 'warning')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        new_password = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return render_template('change_password.html')
+
+        hashed_password = generate_password_hash(new_password)
+
+        try:
+            if session.get('agency_id'):
+                cur.execute(
+                    'UPDATE agency SET password = %s, updated_at = now() WHERE id = %s',
+                    (hashed_password, session.get('agency_id'))
+                )
+            else:
+                cur.execute(
+                    'UPDATE models SET password = %s, updated_at = now() WHERE id = %s',
+                    (hashed_password, session.get('models_id'))
+                )
+            conn.commit()
+            flash('Password changed successfully.', 'success')
+            return redirect(url_for('fetch_statistics'))
+        except Exception as e:
+            conn.rollback()
+            print(f"Error changing password: {e}")
+            flash('Something went wrong. Please try again.', 'danger')
+            return render_template('change_password.html')
+
+    return render_template('change_password.html')
 
 
 @app.route('/fetch_collaborations')
@@ -346,7 +387,7 @@ def collaboration_models():
 
 @app.route('/logout')
 def logout():
-    session.pop('user_id', None)
+    session.clear()
     flash('You have been logged out.', 'success')
     return redirect(url_for('login'))
 

@@ -34,13 +34,15 @@ body {
   background: var(--paper);
   border-bottom: 1px solid var(--line);
 }
+
 .desktop-only {
   display: flex;
   align-items: center;
-  gap: 2.25rem;
+  gap: 3.25rem;  
 }
+
 .nav-inner {
-  max-width: 1200px;
+  /* max-width: 1200px; */
   margin: 0 auto;
   padding: 0 1.5rem;
   display: flex;
@@ -48,6 +50,13 @@ body {
   justify-content: space-between;
   height: 72px;
 }
+
+
+.auth_buttons {
+ position: relative;
+ left: 50%;
+ }
+
 
 main {
   margin: 0;
@@ -145,8 +154,8 @@ h2 {
 
 .nav-links {
   display: flex;
-  align-items: flex-end;
-  gap: 1.25rem;
+  align-items: center;
+  gap: 1.5rem;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -202,9 +211,11 @@ h2 {
   background-color: var(--muted);
 }
 
-.agencies {
+.agencies-page {
   background-color: var(--ink);
-  color: var(--paper)
+  color: var(--paper);
+  width: 80vw;
+  border-radius: 12px;
 }
 
 .nav-links a:hover::after,
@@ -752,6 +763,105 @@ h3 {
   color: #fff;
 }
 
+
+/* ==========================================================================
+   Flash message toasts — standalone styling, independent of Tailwind.
+   ========================================================================== */
+
+.flash-container {
+  position: fixed;
+  top: 88px; /* clears the 72px fixed nav + a little breathing room */
+  right: 1.5rem;
+  z-index: 60; /* above .nav's z-index: 30 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 340px;
+}
+
+.flash {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  padding: 0.9rem 2.25rem 0.9rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-left: 4px solid #6b6b6b;
+  opacity: 0;
+  transform: translateX(20px);
+  animation: flash-in 0.25s ease-out forwards;
+}
+
+.flash.flash-out {
+  animation: flash-out 0.2s ease-in forwards;
+}
+
+.flash-success { border-left-color: #16a34a; }
+.flash-danger  { border-left-color: #dc2626; }
+.flash-warning { border-left-color: #d97706; }
+.flash-info    { border-left-color: #2563eb; }
+
+.flash-close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  color: #9ca3af;
+  padding: 0.15rem;
+}
+
+.flash-close:hover {
+  color: #1a1a1a;
+}
+
+.flash-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background-color: currentColor;
+  opacity: 0.25;
+  animation: flash-shrink 4s linear forwards;
+}
+
+.flash-success .flash-progress { color: #16a34a; }
+.flash-danger  .flash-progress { color: #dc2626; }
+.flash-warning .flash-progress { color: #d97706; }
+.flash-info    .flash-progress { color: #2563eb; }
+
+@keyframes flash-in {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes flash-out {
+  to {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+}
+
+@keyframes flash-shrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+
+@media (max-width: 480px) {
+  .flash-container {
+    left: 1rem;
+    right: 1rem;
+    max-width: none;
+  }
+}
 /* @media (max-width: 860px) {
     .desktop-only { display: none; }
     .toggle { display: block; }
