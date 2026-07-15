@@ -273,6 +273,29 @@ def update_job_status_on_acceptance(job_id: int, model_response: str):
         print(f"Error updating status: {e}")
         return None
 
+def get_models_by_category(category):
+    try:
+        cur.execute(
+            'SELECT * FROM models WHERE LOWER(category) = LOWER(%s)',
+            (category,)
+        )
+        return cur.fetchall()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error fetching models by category: {e}")
+        return []
+
+def get_agencies_by_category(category):
+    try:
+        cur.execute(
+            'SELECT * FROM agency WHERE LOWER(agency_type) = LOWER(%s)',
+            (agency_type,)
+        )
+        return cur.fetchall()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error fetching agencies by category: {e}")
+        return []
         
 def get_active_jobs(agency_id):
     try:

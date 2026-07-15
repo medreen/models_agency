@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, session
 from functools import wraps
-from mydatabase import get_model_by_email, update_job_status_on_acceptance, get_active_jobs, get_pending_jobs, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
+from mydatabase import get_model_by_email, update_job_status_on_acceptance, get_active_jobs, get_pending_jobs, get_models_by_category, get_agencies_by_category, insert_model, insert_agency, check_agency_exists, check_model_exists, get_all_jobs, get_all_collaborations, get_all_collaboration_models, get_all_agencies, get_all_models, insert_job, insert_collaboration, insert_collaboration_model, get_model_jobs, get_model_collaborations, get_model_agencies, get_agency_jobs, get_agency_collaborations
 from datetime import datetime
 from flask_bcrypt import Bcrypt
 import os
@@ -14,19 +14,18 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")  #
 
 jobs_bp = Blueprint("jobs", __name__)
-
+subsscription = ''
 #creating a bcrypt object for password hashing
 bcrypt = Bcrypt(app)
 
 @app.route('/')
 def home():
-
     return render_template('index.html')
 
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'email' not in session:
+        if 'agency_id' not in session and 'models_id' not in session:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('login'))
         return f(*args, **kwargs)
@@ -36,7 +35,7 @@ def login_required(f):
 def register_model():
 
     subscription = request.args.get('subscribe', 'free')
-    subscriptions = subscription
+    subscription = subscription
 
     if request.method == 'POST':
         first_name = request.form['first_name']
@@ -153,15 +152,21 @@ def login():
             return redirect(url_for('home'))
     return render_template('login.html')
 
-@app.route('/models')
-# @login_required
+@app.route('/models', methods=['POST', 'GET'])
+@login_required
 def models_dashboard():
-    models = get_all_models()
-    return render_template('models.html', models = models)
+    category = None
+    if request.method == 'POST':
+        category = request.form.get('category')
+    if category:
+        models = get_models_by_category(category)
+    else:
+        models = get_all_models()
+    return render_template('models.html', models=models)
 
 
 @app.route('/add_job', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def add_job():
     if request.method == 'POST':
         title = request.form['title']
@@ -202,15 +207,16 @@ def add_job():
     return render_template('dashboard.html')
 
 @jobs_bp.route("/jobs/<int:job_id>/respond", methods=["POST"])
+@login_required
 def respond_to_job(job_id):
     models_id = session.get("models_id")  # however you're tracking the logged-in model
     if not models_id:
-        flash("Log in as model to respond to job requests.")
+        flash("Log in as model to respond to job requests.", 'danger')
         return redirect(url_for("login"))
 
     response = request.form.get("response")  # "accepted" or "declined"
     if response not in ("accepted", "declined"):
-        flash("Invalid response.")
+        flash("Invalid response.", 'danger')
         return redirect(url_for("jobs"))
 
     try:
@@ -219,13 +225,13 @@ def respond_to_job(job_id):
             models_id=models_id,
             model_response=response,
         )
-        flash(f"Job {response} successfully.")
+        flash(f"Job {response} successfully.", 'success')
     except ValueError as e:
         flash(str(e))
     return redirect(url_for("jobs"))
 
 @app.route('/jobs')
-# @login_required
+@login_required
 def jobs():
     
     is_agent = None
@@ -254,14 +260,20 @@ def jobs():
         is_agent=is_agent,
         model_jobs=model_jobs
     )
-@app.route('/agency')
-# @login_required
-def agency(): 
-    agencies = get_all_agencies()    
+@app.route('/agency', methods=['POST', "GET"])
+@login_required
+def agency():
+    agency_type = None
+    if request.method == 'POST':
+        agency_type = request.form.get('agency_type')
+    if agency_type:
+        agencies = get_agencies_by_category(agency_type)
+    else:
+        agencies = get_all_agencies()    
     return render_template('agency.html', agencies=agencies)
 
 @app.route('/dashboard')
-# login_required
+@login_required
 def fetch_statistics(): 
     agency = None   
     model_jobs = []
@@ -320,6 +332,9 @@ def change_password():
 
     return render_template('change_password.html')
 
+@app.route('/applications')
+def application():  
+    pass
 
 @app.route('/fetch_collaborations')
 # @login_required
