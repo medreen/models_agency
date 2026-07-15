@@ -285,7 +285,7 @@ def get_models_by_category(category):
         print(f"Error fetching models by category: {e}")
         return []
 
-def get_agencies_by_category(category):
+def get_agencies_by_category(agency_type):
     try:
         cur.execute(
             'SELECT * FROM agency WHERE LOWER(agency_type) = LOWER(%s)',

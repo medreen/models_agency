@@ -269,7 +269,8 @@ def agency():
     if agency_type:
         agencies = get_agencies_by_category(agency_type)
     else:
-        agencies = get_all_agencies()    
+        agencies = get_all_agencies()
+    print(f"method={request.method}, form={dict(request.form)}, agency_type={agency_type!r}, count={len(agencies)}")
     return render_template('agency.html', agencies=agencies)
 
 @app.route('/dashboard')

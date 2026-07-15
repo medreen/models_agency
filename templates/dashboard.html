@@ -19,6 +19,13 @@ Data & info
 <div class="page-content">
 
 {% if session.get('agency_id') %}
+<!-- Modal toggle -->
+ <div grid lg:grid-cols-2>
+ <button data-modal-target="job-modal" data-modal-toggle="job-modal" class="cta-dark w-full mt-6 mb-8" style="max-width: 400px; width: 100%; position: sticky; left: 70%;" type="button">
+  Add job
+</button>
+
+</div>
 <section class="top-dta">
     <div class="grid grid-cols-3 gap-3">
         <div class="stat-card p-4 border pt-5 overflow-hidden">
@@ -218,10 +225,7 @@ Data & info
 
 <section>
 <div class="modal-sct gap-4 relative w-full block">
-<!-- Modal toggle -->
- <button data-modal-target="job-modal" data-modal-toggle="job-modal" class="cta-dark absolute top-6 right-3" type="button">
-  Add job
-</button>
+
 <!-- Main modal -->
 <div id="job-modal" tabindex="-1" aria-hidden="true" class="container-form shadow-sm mt-8">
     <div class="relative w-full max-w-md max-h-full">
