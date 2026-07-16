@@ -398,7 +398,15 @@
       </label>
     </div>
 
-    <button type="submit" class="cta w-full">Complete Account Set Up</button>
+    {% if subscription %}
+     <a
+            href="/checkout?subscribe={{subscription}}"
+            class="cta mt-2 mb-4 w-full inline-block text-center"
+            >proceed to payment</a
+          >
+    {% else %}
+    <button type="submit" class="cta w-full">Complete account set up</button>
+    {% endif %}
 
     <p class="text-sm text-center text-body mt-4">
       Already have an account?

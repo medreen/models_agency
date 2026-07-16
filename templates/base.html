@@ -52,13 +52,13 @@
         
         <div class="auth_buttons">
         {% if session.get('agency_id') or session.get('models_id') %}
-        
-        <a href="/logout" class="cta">Logout</a>
+        <a href="/upgrade" class="cta-dark text-center w-full">Upgrade</a>
+        <a href="/logout" class="cta">Logout</a>        
         {% else %}
         <a href="/register_model?subscribe=free" class="cta w-full">Join as model</a>
         <a href="/login" class="cta">Login</a>
-        {% endif %}
         <a href="/pricing" class="cta-dark text-center w-full">See Plans</a>
+        {% endif %}        
         </div>
       </div>
 

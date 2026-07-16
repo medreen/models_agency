@@ -1,0 +1,189 @@
+{% extends 'base.html' %}{% block title %} Pricing {% endblock %}
+{% block content %}
+<section class="gap-2 mt-4" style="height: 100vh;">
+    
+
+    {% if session.get('agency_id') %}
+    <div class="grid grid-cols-3 gap-2">
+      <div class="mt-4 mb-6 pricing">
+        <div class="plan-details">
+          <span class="plan-name text-sm font-bold logo-mark">Free</span>
+          <div class="price">
+            <span class="text-3xl font-semibold">FREE</span
+            ><span class="text-xs logo-tag"></span>
+            <p class="text-xs font-light">Try out some of our features.</p>
+          </div>
+          <a
+            href="/checkout?subscribe=free"
+            class="cta mt-2 mb-4 w-full inline-block text-center"
+            >Try it for free</a
+          >
+        </div>
+        <div class="features">
+          <ul>
+            <li>Upto 3 job invites</li>
+            <li>Track data and statistics</li>
+            <li>Access upto 5 models</li>
+            <li>Access upto 2 agencies</li>
+            <li class="unavailable">Unlimited job invites</li>
+            <li class="unavailable">Access all models</li>
+            <li class="unavailable">View all agencies available</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-4 mb-6 pricing">
+        <div class="plan-details">
+          <span class="plan-name text-sm font-bold logo-mark">Basic</span>
+          <div class="price">
+            <span class="text-3xl font-semibold">KES 2000</span
+            ><span class="text-xs logo-tag">/month</span>
+            <p class="text-xs font-light">
+              Recommended for freelance agencies.
+            </p>
+          </div>
+          <a
+            href="/checkout?subscribe=basic?"
+            class="cta mt-2 mb-4 w-full inline-block text-center"
+            >Get Started</a
+          >
+        </div>
+        <div class="features">
+          <ul>
+            <li>Upto 5 job invites</li>
+            <li>Track data and statistics</li>
+            <li>Access upto 10 models</li>
+            <li>Access upto 5 agencies</li>
+            <li class="unavailable">Unlimited job invites</li>
+            <li class="unavailable">Access all models</li>
+            <li class="unavailable">View all agencies available</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-4 mb-6 pricing">
+        <div class="plan-details">
+          <span class="plan-name text-sm font-bold logo-mark">Pro</span>
+          <div class="price">
+            <span class="text-3xl font-semibold">KES 4500 </span
+            ><span class="text-xs logo-tag">/month</span>
+            <p class="text-xs font-light">
+              Suitable for agencies looking for proffesionalism
+            </p>
+          </div>
+          <a
+            href="/checkout?subscribe=pro"
+            class="cta mt-2 mb-4 w-full inline-block text-center"
+            >Get Started</a
+          >
+        </div>
+        <div class="features">
+          <p class="text-xs opacity-30" style="color: rgb(87, 86, 86)">
+            Everything in basic plus:
+          </p>
+          <ul>
+            <li>Market jobs to potential applicants</li>
+            <li>Invite any model to jobs</li>
+            <li>Unlimited job invites</li>
+            <li>Access all models</li>
+            <li>View all agencies available</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% elif session.get('models_id') %}
+    <div class="grid grid-cols-3 gap-2">
+      <div class="mt-4 mb-6 pricing">
+        <div class="plan-details">
+          <span class="plan-name text-sm font-bold logo-mark">Free</span>
+          <div class="price">
+            <span class="text-3xl font-semibold">FREE</span>
+            <p class="text-xs font-light">Try out some of our features.</p>
+          </div>
+          <a
+            href="/checkout?subscribe=free"
+            class="cta mt-2 mb-4 w-full inline-block text-center"
+            >Try it for free</a
+          >
+        </div>
+        <div class="features">
+          <ul>
+            <li>Upto 3 job applications</li>
+            <li>Track information and data</li>
+            <li>View top 5 agencies</li>
+
+            <li class="unavailable">Allow agencies to assign you jobs</li>
+            <li class="unavailable">Apply for all jobs available</li>
+            <li class="unavailable">View and access all agencies available</li>
+            <li class="unavailable">Accept job invites in real time</li>
+            <li class="unavailable">View and access all available models</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-4 mb-6 pricing">
+        <div class="plan-details">
+          <span class="plan-name text-sm font-bold logo-mark">Basic</span>
+          <div class="price">
+            <span class="text-3xl font-semibold">KES 1500</span
+            ><span class="text-xs logo-tag">/month</span>
+            <p class="text-xs font-light">Looking for freelance jobs</p>
+          </div>
+          <a
+            href="/checkout?subscribe=basic"
+            class="cta mt-2 mb-4 w-full inline-block text-center"
+            >Get Started</a
+          >
+        </div>
+
+        <div class="features">
+          <ul>
+            <li>Upto 10 job applications</li>
+            <li>Track information and data</li>
+            <li>View top 10 agencies</li>
+
+            <li class="unavailable">Allow agencies to assign you jobs</li>
+            <li class="unavailable">Apply for all jobs available</li>
+            <li class="unavailable">View and access all agencies available</li>
+            <li class="unavailable">Accept job invites in real time</li>
+            <li class="unavailable">View and access all available models</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-4 mb-6 pricing">
+        <div class="plan-details">
+          <span class="plan-name text-sm font-bold logo-mark">Pro</span>
+          <div class="price">
+            <span class="text-3xl font-semibold">KES 4000</span
+            ><span class="text-xs logo-tag">/month</span>
+            <p class="text-xs font-light">
+              Suitable for talents looking for professional work.
+            </p>
+          </div>
+         <a
+            href="/checkout?subscribe=pro"
+            class="cta mt-2 mb-4 w-full inline-block text-center"
+            >Get Started</a
+          >
+        </div>
+        <div class="features">
+          <p class="text-xs opacity-30" style="color: rgb(87, 86, 86)">
+            Everything in basic plus:
+          </p>
+          <ul>
+            <li class="">Allow agencies to assign you jobs</li>
+            <li class="">Apply for all jobs available</li>
+            <li class="">View and access all agencies available</li>
+            <li class="">Accept job invites in real time</li>
+            <li class="">View and access all available models</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+ 
+
+{% endblock %}

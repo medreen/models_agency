@@ -1,22 +1,202 @@
-{% extends 'base.html' %} {% block title %} Create Model Account {% endblock %}
+{% extends 'base.html' %} 
+{% block title %} Create Model Account {% endblock %}
 {% block content %}
 
-<div class="container-form p-6" >    
-<form action="/change_password" method="POST"> 
-    <h4 class="text-2xl font-bold mb-6"><span class="logo-mark">Login</span> to Your Account</h4>    
-    <div class="mb-6">
-        <label for="password" class="block mb-2.5 text-sm font-medium text-heading">New Password</label>
-        <input type="password" id="password" name="new_password" class="bg-neutral-secondary-medium border  text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="•••••••••" required />
-    </div> 
-    <div class="mb-6">
-        <label for="confirm_password" class="block mb-2.5 text-sm font-medium text-heading">Confirm Password</label>
-        <input type="confirm_password" id="confirm_password" name="confirm_new_password" class="bg-neutral-secondary-medium border  text-heading text-sm rounded-base focus:ring-brand focus:border-brand block w-full px-3 py-2.5 shadow-xs placeholder:text-body" placeholder="•••••••••" required />
-    </div> 
-  
+<!-- We embed price mapping metadata as data attributes for our JS switcher to access -->
+<section 
+  class="bg-white py-8 antialiased dark:bg-gray-900 md:py-16"
+  id="checkout-container"
+  data-mpesa-price="{{ plan.pricing.KES.amount }}"
+  data-mpesa-fee="{{ plan.pricing.KES.fee }}"
+  data-mpesa-total="{{ plan.pricing.KES.total }}"
+  data-card-price="{{ plan.pricing.USD.amount }}"
+  data-card-fee="{{ plan.pricing.USD.fee }}"
+  data-card-total="{{ plan.pricing.USD.total }}"
+>
+  <div class="mx-auto max-w-screen-xl px-4 2xl:px-0">
+    <div class="mx-auto max-w-5xl">
+      <span class="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl mb-6">Payment Method ({{ plan.name }})</span>
 
-    <button type="submit" class="cta w-full">Change Password</button>
-</form>
+      <div class="mt-6 gap-6 sm:mt-8 lg:flex lg:items-start lg:gap-12">
+        
+        <!-- Left Side: Payment Method Selector & Forms -->
+        <div class="w-full lg:max-w-xl">
+          
+          <!-- Segmented Tab Switcher -->
+          <div class="flex p-1 bg-gray-100 dark:bg-gray-800 rounded-xl mb-6">
+            <button type="button" class="pm-tab w-1/2 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 active-tab" data-target="mpesa-panel">
+              M-Pesa
+            </button>
+            <button type="button" class="pm-tab w-1/2 py-2.5 text-sm font-semibold rounded-lg transition-all duration-200 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white" data-target="card-panel">
+              Card
+            </button>
+          </div>
 
+          <!-- M-Pesa Payment Panel -->
+          <div id="mpesa-panel" class="pm-panel space-y-4">
+            <form action="/checkout?subscribe={{ subscription }}" method="POST" class="space-y-4">
+              <!-- Set hidden input to signify M-Pesa -->
+              <input type="hidden" name="payment_method" value="mpesa">
+              
+              <div>
+                <label for="phone" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">M-Pesa Phone Number*</label>
+                <div class="relative">
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    name="phone"
+                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-emerald-500 focus:ring-emerald-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-emerald-500 dark:focus:ring-emerald-500" 
+                    placeholder="254712345678" 
+                    pattern="^254(7|1)[0-9]{8}$"
+                    required 
+                  />
+                </div>
+                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  Format: 2547XXXXXXXX or 2541XXXXXXXX. You will receive an instant M-Pesa PIN prompt on your phone.
+                </p>
+              </div>
 
-</div>
+              <button type="submit" class="flex w-full items-center justify-center rounded-lg px-5 py-3 text-sm font-semibold text-white hover:opacity-90 focus:outline-none focus:ring-4 focus:ring-emerald-300 transition-all" style="background-color: #22c55e;">
+                Pay with M-Pesa
+              </button>
+            </form>
+          </div>
+
+          <!-- Card (Stripe Redirect) Panel -->
+          <div id="card-panel" class="pm-panel space-y-4 hidden">
+            <form action="/checkout?subscribe={{ subscription }}" method="POST" class="space-y-4">
+              <!-- Set hidden input to signify Card/Stripe -->
+              <input type="hidden" name="payment_method" value="stripe">
+
+              <div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 p-4 text-sm text-gray-600 dark:text-gray-300">
+                <div class="flex items-start gap-3">
+                  <span class="text-xl">🔒</span>
+                  <div>
+                    <h4 class="font-semibold text-gray-900 dark:text-white mb-1">Secure Checkout via Stripe</h4>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">You will be redirected to a secure Stripe portal to safely enter your credit or debit card details.</p>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="flex w-full items-center justify-center rounded-lg bg-indigo-600 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-800 transition-all">
+                Proceed to Secure Card Payment
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        <!-- Right Side: Order Summary -->
+        <div class="mt-6 grow sm:mt-8 lg:mt-0">
+          <div class="space-y-6 rounded-lg border border-gray-100 bg-gray-50 p-6 dark:border-gray-700 dark:bg-gray-800">
+            <div class="space-y-4">
+              <dl class="flex items-center justify-between gap-4">
+                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Original price</dt>
+                <!-- Default display starts as M-Pesa KES -->
+                <dd id="summary-original-price" class="text-base font-medium text-gray-900 dark:text-white">KES {{ "{:,.2f}".format(plan.pricing.KES.amount) }}</dd>
+              </dl>
+
+              <dl class="flex items-center justify-between gap-4">
+                <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Transaction Cost</dt>
+                <dd id="summary-transaction-fee" class="text-base font-medium text-gray-900 dark:text-white">KES {{ "{:,.2f}".format(plan.pricing.KES.fee) }}</dd>
+              </dl>
+            </div>
+
+            <dl class="flex items-center justify-between gap-4 border-t border-gray-200 pt-2 dark:border-gray-700">
+              <dt class="text-base font-bold text-gray-900 dark:text-white">Total</dt>
+              <dd id="summary-total-price" class="text-base font-bold text-gray-900 dark:text-white">KES {{ "{:,.2f}".format(plan.pricing.KES.total) }}</dd>
+            </dl>
+          </div>
+
+          <!-- Brand Logos -->
+          <div class="mt-6 flex items-center justify-center gap-8 opacity-75">
+            <span class="text-xs font-bold tracking-widest text-emerald-600 dark:text-emerald-400 border border-emerald-600/30 px-2 py-1 rounded">M-PESA</span>
+            <img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa.svg" alt="Visa" />
+            <img class="hidden h-8 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/visa-dark.svg" alt="Visa Dark" />
+            <img class="h-8 w-auto dark:hidden" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/mastercard.svg" alt="Mastercard" />
+            <img class="hidden h-8 w-auto dark:flex" src="https://flowbite.s3.amazonaws.com/blocks/e-commerce/brand-logos/mastercard-dark.svg" alt="Mastercard Dark" />
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Tab switcher behavior styling styling and script -->
+<style>
+  .pm-tab {
+    background-color: transparent;
+  }
+  .pm-tab.active-tab {
+    background-color: #ffffff;
+    color: #111827;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  .dark .pm-tab.active-tab {
+    background-color: #1f2937;
+    color: #ffffff;
+  }
+</style>
+
+<script>
+  const container = document.getElementById('checkout-container');
+
+  // Grab the values injected from the server template
+  const prices = {
+    mpesa: {
+      currency: "KES ",
+      price: parseFloat(container.dataset.mpesaPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      fee: parseFloat(container.dataset.mpesaFee).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      total: parseFloat(container.dataset.mpesaTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    },
+    card: {
+      currency: "$",
+      price: parseFloat(container.dataset.cardPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      fee: parseFloat(container.dataset.cardFee).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+      total: parseFloat(container.dataset.cardTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    }
+  };
+
+  const originalPriceEl = document.getElementById('summary-original-price');
+  const feeEl = document.getElementById('summary-transaction-fee');
+  const totalEl = document.getElementById('summary-total-price');
+
+  document.querySelectorAll('.pm-tab').forEach((tab) => {
+    tab.addEventListener('click', () => {
+      // 1. Clear active styling from all tabs
+      document.querySelectorAll('.pm-tab').forEach((t) => {
+        t.classList.remove('active-tab');
+        t.classList.add('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-white');
+      });
+      
+      // 2. Hide both panels
+      document.querySelectorAll('.pm-panel').forEach((panel) => {
+        panel.classList.add('hidden');
+      });
+      
+      // 3. Set current tab as active
+      tab.classList.add('active-tab');
+      tab.classList.remove('text-gray-500', 'dark:text-gray-400', 'hover:text-gray-900', 'dark:hover:text-white');
+      
+      // 4. Reveal targeted panel
+      const targetId = tab.dataset.target;
+      document.getElementById(targetId).classList.remove('hidden');
+
+      // 5. Update dynamic pricing details
+      if (targetId === 'mpesa-panel') {
+        originalPriceEl.textContent = prices.mpesa.currency + prices.mpesa.price;
+        feeEl.textContent = prices.mpesa.currency + prices.mpesa.fee;
+        totalEl.textContent = prices.mpesa.currency + prices.mpesa.total;
+      } else {
+        originalPriceEl.textContent = prices.card.currency + prices.card.price;
+        feeEl.textContent = prices.card.currency + prices.card.fee;
+        totalEl.textContent = prices.card.currency + prices.card.total;
+      }
+    });
+  });
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
 {% endblock %}

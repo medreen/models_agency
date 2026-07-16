@@ -15,7 +15,7 @@ app.secret_key = os.getenv("SECRET_KEY")  #
 
 jobs_bp = Blueprint("jobs", __name__)
 subscription = ''
-checkout = ''
+subscription_key = ''
 #creating a bcrypt object for password hashing
 bcrypt = Bcrypt(app)
 
@@ -96,6 +96,9 @@ def register_agency():
     subscription = request.args.get('subscribe', 'free')
     subscription = subscription
 
+    subscription_status = request.args.get('subscription_status', 'not_paid')
+    subscription_status = subscription_status
+
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
@@ -114,7 +117,7 @@ def register_agency():
         updated_at = datetime.now()
         created_at = datetime.now()
 
-        print("Subscription is",subscription)
+        print("Subscription is",subscription)           
 
         agent = check_agency_exists(email)
         if not agent:
@@ -126,11 +129,10 @@ def register_agency():
                 address, city, country, agency_type, founded_year,
                 commission_pct,
                 logo_url, instagram_url, created_at, updated_at, total_models, subscription
-            )
+            )            
             new_agency_id = insert_agency(new_agency)
             session.clear()
             session['agency_id'] = new_agency_id
-
             flash('Account created successfully.', 'success')
             return redirect(url_for('fetch_statistics'))
         else:
@@ -343,9 +345,81 @@ def change_password():
 
     return render_template('change_password.html')
 
-@app.route('/checkout')
-def checkout():  
-    return render_template('checkout.html')
+def format_kenyan_phone(phone_str):   
+    cleaned = ''.join(filter(str.isdigit, phone_str))
+    if cleaned.startswith("0"):
+        return "254" + cleaned[1:]
+    elif cleaned.startswith("7") or cleaned.startswith("1"):
+        return "254" + cleaned
+    elif cleaned.startswith("254"):
+        return cleaned
+    return cleaned
+
+@app.route('/checkout', methods=['GET', 'POST'])
+def checkout():
+    plan = ''
+    subscription_key = request.args.get('subscribe', 'basic')  # fallback default
+    if session.get('agency_id'):        
+        PLAN_MAPPING = {
+            "basic": {
+                "id": "basic",
+                "name": "Basic Agency Account",
+                "pricing": {
+                    "USD": {"amount": 19.00, "fee": 1.00, "total": 20.00},
+                    "KES": {"amount": 2000.00, "fee": 50.00, "total": 2050.00},
+                }
+            },
+            "pro": {
+                "id": "pro",
+                "name": "Pro Agency Account",
+                "pricing": {
+                    "USD": {"amount": 49.00, "fee": 2.00, "total": 51.00},
+                    "KES": {"amount": 4500.00, "fee": 100.00, "total": 4600.00},
+                }
+            }
+        }
+    elif session.get('model_id'):
+        PLAN_MAPPING = {
+            "basic": {
+                "id": "basic",
+                "name": "Basic Model Account",
+                "pricing": {
+                    "USD": {"amount": 19.00, "fee": 1.00, "total": 20.00},
+                    "KES": {"amount": 1500.00, "fee": 50.00, "total": 1550.00},
+                }
+            },
+            "pro": {
+                "id": "pro",
+                "name": "Pro Model Account",
+                "pricing": {
+                    "USD": {"amount": 49.00, "fee": 2.00, "total": 51.00},
+                    "KES": {"amount": 4000.00, "fee": 100.00, "total": 4100.00},
+                }
+            }
+        }
+
+        
+    plan = PLAN_MAPPING.get(subscription_key, PLAN_MAPPING['basic'])
+    if not plan:
+        flash("Invalid subscription selection. Redirecting to plans.", 'danger')
+        return redirect(url_for('/'))
+    if request.method == 'POST':
+            pass       
+           
+            
+    else:
+        flash("Invalid payment method selected.")
+        return redirect('checkout')
+        
+    return render_template(
+        'checkout.html', 
+        subscription=subscription_key, 
+        plan=plan
+    )
+
+@app.route('/upgrade', methods=['GET', 'POST'])
+def upgrade():
+    return render_template('upgrade.html')
     
 @app.route('/fetch_collaborations')
 # @login_required
