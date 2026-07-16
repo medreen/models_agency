@@ -132,14 +132,6 @@ def get_model_agencies(model_id):
         print(f"Error fetching agencies: {e}")
         return []
 
-def get_model_jobs(assigned_model_id):
-    try:
-        cur.execute('SELECT * FROM jobs WHERE assigned_model_id = %s', (assigned_model_id,))
-        return cur.fetchall()
-    except Exception as e:
-        conn.rollback()
-        print(f"Error fetching jobs: {e}")
-        return []
 
 def get_pending_jobs(assigned_model_id):
     try:
@@ -167,14 +159,68 @@ def get_all_agencies():
         conn.rollback()
         print(f"Error fetching agencies: {e}")
         return []
-
 def get_agency_jobs(agency_id):
+    """
+    Agency view: for each job this agency posted, also pull in the
+    assigned model's name via a LEFT JOIN (LEFT, not INNER, so jobs
+    with no model assigned yet — assigned_model_id IS NULL — still
+    show up, just with model_first_name/model_last_name as NULL).
+    """
     try:
-        cur.execute('SELECT * FROM jobs WHERE agency_id = %s', (agency_id,))
+        cur.execute(
+            """
+            SELECT
+                jobs.id, jobs.title, jobs.job_type, jobs.location, jobs.city,
+                jobs.country, jobs.start_date, jobs.end_date, jobs.start_time,
+                jobs.end_time, jobs.rate_per_hour, jobs.total_hours, jobs.currency,
+                jobs.status, jobs.is_paid, jobs.gender_required, jobs.category_required,
+                jobs.min_height_cm, jobs.max_height_cm, jobs.description,
+                jobs.agency_id, jobs.assigned_model_id,
+                models.first_name AS model_first_name,
+                models.last_name AS model_last_name
+            FROM jobs
+            LEFT JOIN models ON jobs.assigned_model_id = models.id
+            WHERE jobs.agency_id = %s
+            ORDER BY jobs.start_date DESC
+            """,
+            (agency_id,)
+        )
         return cur.fetchall()
     except Exception as e:
         conn.rollback()
-        print(f"Error fetching jobs: {e}")
+        print(f"Error fetching agency jobs: {e}")
+        return []
+
+
+def get_model_jobs(model_id):
+    """
+    Model view: for each job assigned to this model, also pull in
+    the posting agency's name via a LEFT JOIN (agency_id can be
+    NULL per your schema's ON DELETE SET NULL, so LEFT JOIN keeps
+    those jobs visible rather than silently dropping them).
+    """
+    try:
+        cur.execute(
+            """
+            SELECT
+                jobs.id, jobs.title, jobs.job_type, jobs.location, jobs.city,
+                jobs.country, jobs.start_date, jobs.end_date, jobs.start_time,
+                jobs.end_time, jobs.rate_per_hour, jobs.total_hours, jobs.currency,
+                jobs.status, jobs.is_paid, jobs.gender_required, jobs.category_required,
+                jobs.min_height_cm, jobs.max_height_cm, jobs.description,
+                jobs.agency_id, jobs.assigned_model_id,
+                agency.name AS agency_name
+            FROM jobs
+            LEFT JOIN agency ON jobs.agency_id = agency.id
+            WHERE jobs.assigned_model_id = %s
+            ORDER BY jobs.start_date DESC
+            """,
+            (model_id,)
+        )
+        return cur.fetchall()
+    except Exception as e:
+        conn.rollback()
+        print(f"Error fetching model jobs: {e}")
         return []
 
 def get_agency_collaborations(agency_id):
