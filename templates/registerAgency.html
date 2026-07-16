@@ -270,7 +270,7 @@
       </label>
     </div>
 
-    {% if subscription %}
+    {% if subscription and subscription|lower != 'free' %}
      <a
             href="/checkout?subscribe={{subscription}}"
             class="cta mt-2 mb-4 w-full inline-block text-center"
