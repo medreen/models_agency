@@ -15,6 +15,7 @@ app.secret_key = os.getenv("SECRET_KEY")  #
 
 jobs_bp = Blueprint("jobs", __name__)
 subscription = ''
+checkout = ''
 #creating a bcrypt object for password hashing
 bcrypt = Bcrypt(app)
 
@@ -81,7 +82,10 @@ def register_model():
             session.clear()
             session['models_id'] = new_model_id
             flash('Account created successfully.' 'success')
-            return redirect(url_for('jobs'))
+            if subscription.lower() in ['basic', 'pro']:
+                return redirect(url_for('checkout'))
+            else:
+                return redirect(url_for('jobs'))
         else:
             flash('Account already exists.', 'warning')
     return render_template('registermodel.html', subscription = subscription)
@@ -339,10 +343,10 @@ def change_password():
 
     return render_template('change_password.html')
 
-@app.route('/applications')
-def application():  
-    pass
-
+@app.route('/checkout')
+def checkout():  
+    return render_template('checkout.html')
+    
 @app.route('/fetch_collaborations')
 # @login_required
 def fetch_agency_collaborations():
