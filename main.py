@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")  #
 
 jobs_bp = Blueprint("jobs", __name__)
-subsscription = ''
+subscription = ''
 #creating a bcrypt object for password hashing
 bcrypt = Bcrypt(app)
 
@@ -25,10 +25,12 @@ def home():
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if 'agency_id' not in session and 'models_id' not in session:
+        if session.get('agency_id') or session.get('models_id'):
+            return f(*args, **kwargs)
+        else:
             flash('Please log in to access this page.', 'warning')
             return redirect(url_for('login'))
-        return f(*args, **kwargs)
+        
     return decorated_function
 
 @app.route('/register_model', methods=['GET', 'POST'])
@@ -62,6 +64,8 @@ def register_model():
         updated_at = datetime.now()
         created_at = datetime.now()
 
+        print('Subscription is', subscription )
+
         model = check_model_exists(email)
         if not model:
             hashed_password = generate_password_hash(password)
@@ -70,23 +74,23 @@ def register_model():
                 date_of_birth, gender, height_cm, weight_kg,
                 bust_cm, waist_cm, hips_cm, shoe_size,
                 eye_color, hair_color, category, is_available,
-                experience_yrs, rate_per_hour, portfolio_url,
-                profile_photo_url, created_at, updated_at
+                experience_yrs, rate_per_hour, portfolio_url, 
+                profile_photo_url, created_at, updated_at, subscription
             )
             new_model_id = insert_model(new_model)
             session.clear()
             session['models_id'] = new_model_id
-            flash('Account created successfully. Please log in.', 'success')
+            flash('Account created successfully.' 'success')
             return redirect(url_for('jobs'))
         else:
             flash('Account already exists.', 'warning')
-    return render_template('registerModel.html')
+    return render_template('registermodel.html', subscription = subscription)
 
 
 @app.route('/register_agency', methods=['GET', 'POST'])
 def register_agency():
     subscription = request.args.get('subscribe', 'free')
-    subscriptions = subscription
+    subscription = subscription
 
     if request.method == 'POST':
         name = request.form['name']
@@ -106,6 +110,8 @@ def register_agency():
         updated_at = datetime.now()
         created_at = datetime.now()
 
+        print("Subscription is",subscription)
+
         agent = check_agency_exists(email)
         if not agent:
             hashed_password = generate_password_hash(password)
@@ -115,17 +121,17 @@ def register_agency():
                 name, email, phone, hashed_password, website,
                 address, city, country, agency_type, founded_year,
                 commission_pct,
-                logo_url, instagram_url, created_at, updated_at, total_models
+                logo_url, instagram_url, created_at, updated_at, total_models, subscription
             )
             new_agency_id = insert_agency(new_agency)
             session.clear()
             session['agency_id'] = new_agency_id
 
-            flash('Account created successfully. Please log in.', 'success')
+            flash('Account created successfully.', 'success')
             return redirect(url_for('fetch_statistics'))
         else:
             flash('Account already exists.', 'warning')
-    return render_template('registerAgency.html')
+    return render_template('registerAgency.html', subscription = subscription)
 
 
 @app.route('/login', methods=['GET', 'POST'])

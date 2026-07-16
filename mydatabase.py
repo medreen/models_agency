@@ -23,14 +23,14 @@ def insert_model(values):
                 first_name, last_name, email, phone, password,
                 date_of_birth, gender, height_cm, weight_kg,
                 bust_cm, waist_cm, hips_cm, shoe_size,
-                eye_color, hair_color, category, is_available,
-                experience_yrs,  rate_per_hour, portfolio_url, profile_photo_url, created_at, updated_at
+                eye_color, hair_color, category, is_available, 
+                experience_yrs,  rate_per_hour, portfolio_url, profile_photo_url, created_at, updated_at, subscription
             ) VALUES (
                 %s, %s, %s, %s,
                 %s, %s, %s, %s,
                 %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s,
-                %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, 
+                %s, %s, %s, %s, %s, %s
             ) RETURNING id
         ''', values)
         conn.commit()
@@ -45,11 +45,11 @@ def insert_agency(values):
         cur.execute('''
             INSERT INTO agency (
                 name, email, phone, password, website, address, city, country, agency_type, founded_year, commission_pct, logo_url, instagram_url, created_at, updated_at,
-                total_models
+                total_models, subscription
             ) VALUES (
                 %s, %s, %s, %s,
                 %s, %s, %s,
-                %s, %s, %s, %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
 
             ) RETURNING id
         ''', values)
